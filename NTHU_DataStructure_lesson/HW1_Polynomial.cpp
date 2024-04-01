@@ -91,7 +91,9 @@ Polynomial Polynomial::Add(Polynomial b)
     // add in remaining terms of b
     for (; bPos < b.terms; bPos++) // output remaining terms
         c.NewTerm(b.termArray[bPos].coef, b.termArray[bPos].exp);
-    return c;
+    delete[] termArray;
+    termArray = c.termArray;
+    return *this;
 }
 Polynomial Polynomial::Subt(Polynomial b)
 {
@@ -124,7 +126,9 @@ Polynomial Polynomial::Subt(Polynomial b)
     // add in remaining terms of b
     for (; bPos < b.terms; bPos++) // output remaining terms
         c.NewTerm(b.termArray[bPos].coef, b.termArray[bPos].exp);
-    return c;
+    delete[] termArray;
+    termArray = c.termArray;
+    return *this;
 }
 Polynomial Polynomial::Mult(Polynomial b)
 {
@@ -141,7 +145,9 @@ Polynomial Polynomial::Mult(Polynomial b)
         }
         d = d.Add(c);
     }
-    return d;
+    delete[] termArray;
+    termArray = d.termArray;
+    return *this;
 }
 istream &operator>>(istream &ins, Polynomial &arg)
 {
