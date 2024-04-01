@@ -1,48 +1,4 @@
-#include <iostream>
-
-using namespace std;
-
-class Polynomial;
-class Term
-{
-    friend Polynomial;
-
-private:
-    float coef;
-    int exp;
-};
-class Polynomial
-{
-    // p(x) = a0 x^e0 + … + an x^en
-    // where ai is nonzero float and ei is non-negative int
-public:
-    Polynomial();
-    // construct the polynomial p(x) = 0
-    ~Polynomial();
-    // destructor
-    Polynomial Add(Polynomial *poly);
-    // return the sum of *this and poly
-    Polynomial Subt(Polynomial poly);
-    // return the difference of *this and poly
-    Polynomial Mult(Polynomial poly);
-    // return the product of *this and poly
-    void NewTerm(const float theCoeff, const int theExp);
-    float Eval(float f);
-    // Evaluate the polynomial *this at f and return the results
-    int operator!();
-    // if *this is the zero polynomial, return 1; else return 0;
-    float Coef(int e);
-    // return the coefficient of e in *this
-    int LeadExp();
-    // return the largest exponent in *this
-    friend ostream &operator<<(ostream &os, Polynomial &p);
-    friend istream &operator>>(istream &is, Polynomial &p);
-
-private:
-    Term *termArray;
-    int capacity;
-    int terms;
-};
+#include "HW1_Polynomial.h"
 Polynomial::Polynomial()
 {
     capacity = 5;
@@ -51,9 +7,10 @@ Polynomial::Polynomial()
     termArray[terms].coef = 0;
     termArray[terms].exp = 0;
 };
-Polynomial::~Polynomial(){
+Polynomial::~Polynomial()
+{
     // delete[] termArray;
-};
+}
 void Polynomial::NewTerm(const float theCoeff, const int theExp)
 {
     // Add a new term to the end of termArray
@@ -95,10 +52,17 @@ int Polynomial::LeadExp()
     }
     return leadExp;
 }
-Polynomial Polynomial::Add(Polynomial *p)
+float Polynomial::Eval(float f)
+{
+    int leadExp = LeadExp();
+    float y = Coef(leadExp);
+    for (int i = 1; i < leadExp; i++)
+        y = f * y + Coef(leadExp - i);
+    return y;
+}
+Polynomial Polynomial::Add(Polynomial b)
 {
     Polynomial c; // c.terms = 0
-    Polynomial b = *p;
     int aPos = 0, bPos = 0;
     while ((aPos < terms) && (bPos < b.terms))
     {
@@ -175,7 +139,7 @@ Polynomial Polynomial::Mult(Polynomial b)
             if (t)
                 c.NewTerm(t, termArray[i].exp + b.termArray[j].exp);
         }
-        d = d.Add(&c);
+        d = d.Add(c);
     }
     return d;
 }
@@ -207,8 +171,10 @@ ostream &operator<<(ostream &outs, Polynomial &arg)
         return outs;
     for (int i = arg.LeadExp() - 1; i >= 0; i--)
     {
-        if (arg.Coef(i) != 0)
+        if (arg.Coef(i) > 0)
             outs << " + " << arg.Coef(i) << 'x' << i;
+        else if (arg.Coef(i) < 0)
+            outs << " - " << abs(arg.Coef(i)) << 'x' << i;
     }
     return outs;
 }
@@ -221,7 +187,8 @@ int main()
     cout << a << endl;
     cout << b << endl;
     cout << a.LeadExp() << endl;
-    c = a.Add(&b);
+    cout << a.Eval(1) << " " << a.Eval(2) << endl;
+    c = a.Add(b);
     cout << c << endl;
     c = a.Subt(b);
     cout << c << endl;

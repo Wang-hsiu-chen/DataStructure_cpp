@@ -1,43 +1,4 @@
-#include <iostream>
-
-using namespace std;
-
-class SparseMatrix;
-class MatrixTerm
-{
-    friend SparseMatrix;
-
-private:
-    int row, col, value; // a triple representing a term
-};
-class SparseMatrix
-{ // 三元組，<列，行，值>，的集合，其中列與行為非負整數，
-  // 並且它的組合是唯一的；值也是個整數。
-public:
-    SparseMatrix(int r, int c, int t);
-    // constructor.
-    // r is #row, c is #col, t is #non-zero terms
-    void setRowColValue(int, int, int, int);
-    void ChangeSize1D(int);
-    void StoreSum(int, int, int);
-    SparseMatrix Transpose();
-    SparseMatrix FastTranspose();
-    // 回傳將 *this中每個三元組的行與列交換後的SparseMatrix
-    SparseMatrix Add(SparseMatrix b);
-    // 如果 *this和b的維度一樣，那麼就把相對應的項給相加，
-    // 亦即，具有相同列和行的值會被回傳；否則的話丟出例外。
-    SparseMatrix Multiply(SparseMatrix b);
-    // 如果*this中的行數和b中的列數一樣多的話，那麼回傳的矩陣d= *this和b
-    // （依據d[i][j]=Σ(a[i][k]．b[k][j]，其中d[i][j]是第 (i, j) 個元素）相乘的結果。
-    // k的範圍從0到*this的行數減1；如果不一樣多的話，那麼就丟出例外。
-    // other needed functions
-    friend ostream &operator<<(ostream &os, SparseMatrix &p);
-    friend istream &operator>>(istream &is, SparseMatrix &p);
-
-private:
-    int rows, cols, terms, capacity;
-    MatrixTerm *smArray;
-};
+#include "HW1_SparseMatrix.h"
 SparseMatrix::SparseMatrix(int r, int c, int t)
 {
     rows = r;
@@ -55,6 +16,24 @@ void SparseMatrix::setRowColValue(int i, int r, int c, int v)
     smArray[i].value = v;
     return;
 }
+int SparseMatrix::getRowColValue(int i, char item)
+{
+    switch (item)
+    {
+    case 'r':
+        return smArray[i].row;
+        break;
+    case 'c':
+        return smArray[i].col;
+        break;
+    case 'v':
+        return smArray[i].value;
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
 void SparseMatrix::ChangeSize1D(const int newSize)
 { // change the array size to newSize
     if (newSize < terms)
@@ -65,7 +44,7 @@ void SparseMatrix::ChangeSize1D(const int newSize)
     delete[] smArray;
     smArray = temp;
     // make smArray point to the newly created array
-    capacity = newSize;
+    terms = newSize;
 }
 void SparseMatrix::StoreSum(const int sum, const int r, const int c)
 {
@@ -88,10 +67,9 @@ SparseMatrix SparseMatrix::Transpose()
             for (int i = 0; i < terms; i++)
                 if (smArray[i].col == c)
                 {
-                    b.smArray[currentB].row = c;
+                    b.smArray[currentB].row = smArray[i].col;
                     b.smArray[currentB].col = smArray[i].row;
-                    b.smArray[currentB].value =
-                        smArray[i].value;
+                    b.smArray[currentB].value = smArray[i].value;
                     currentB++;
                 }
     } // end of if(terms >0)
@@ -191,21 +169,96 @@ SparseMatrix SparseMatrix::Multiply(SparseMatrix b)
     }                                         // end of the outer while (currRowIndex < terms)
     return d;
 }
-
+SparseMatrix SparseMatrix::Add(SparseMatrix b)
+{
+    if (cols != b.cols || rows != b.rows)
+        throw "Incompatible matrices";
+    int count = 0;
+    SparseMatrix c(rows, cols, terms);
+    copy(smArray, smArray + terms, c.smArray);
+    for (int i = 0; i < b.terms; i++)
+    {
+        for (int j = 0; j < terms; j++)
+        {
+            if (smArray[i].col != b.smArray[j].col || smArray[i].row != b.smArray[j].row)
+                count++;
+            else if (c.smArray[j].col == b.smArray[i].col && c.smArray[j].row == b.smArray[i].row && c.smArray[j].value + b.smArray[i].value != 0)
+                c.smArray[j].value += b.smArray[i].value;
+            else if (c.smArray[j].value + b.smArray[i].value == 0)
+            {
+                for (int k = j + 1; k < c.terms; k++)
+                    c.smArray[k - 1] = c.smArray[k];
+                c.terms--;
+            }
+        }
+        if (count == terms)
+        {
+            c.ChangeSize1D(c.terms + 1);
+            c.smArray[c.terms - 1].row = b.smArray[i].row;
+            c.smArray[c.terms - 1].col = b.smArray[i].col;
+            c.smArray[c.terms - 1].value = b.smArray[i].value;
+        }
+        count = 0;
+    }
+    return c;
+}
 istream &operator>>(istream &ins, SparseMatrix &arg)
 {
     int row, col, value;
     for (int i = 0; i < arg.terms; i++)
     {
         ins >> row >> col >> value;
+        if (row >= arg.rows || col >= arg.cols)
+            throw "error";
         arg.setRowColValue(i, row, col, value);
     }
     return ins;
 }
+ostream &operator<<(ostream &outs, SparseMatrix &arg)
+{
+    int **arrayOut = new int *[arg.rows];
+    for (int i = 0; i < arg.rows; ++i)
+        arrayOut[i] = new int[arg.cols];
+    for (int i = 0; i < arg.cols * arg.rows; i++)
+        arrayOut[i / arg.cols][i % arg.cols] = 0;
+    for (int i = 0; i < arg.terms; i++)
+        arrayOut[arg.getRowColValue(i, 'r')][arg.getRowColValue(i, 'c')] = arg.getRowColValue(i, 'v');
+    for (int i = 0; i < arg.rows; i++)
+    {
+        for (int j = 0; j < arg.cols; j++)
+            outs << arrayOut[i][j] << ' ';
+        outs << endl;
+    }
+    delete[] arrayOut;
+    return outs;
+}
 int main()
 {
-    SparseMatrix a(4, 3, 4), b(4, 3, 5), c(3, 3, 4);
-    cin >> a >> b >> c;
+    SparseMatrix a(4, 3, 4), b(4, 3, 5), c(3, 4, 4), d(3, 4, 4);
+    ifstream fin;
+    fin.open("input1_2.dat", ios::in);
+    if (!fin.good())
+    {
+        perror("sort_data.dat");
+        exit(0);
+    }
+    fin >> a;
+    fin >> b;
+    fin >> c;
+    fin.close();
+    cout << a << b;
+    a = a.Transpose();
+    cout << "T: \n"
+         << a;
+    a = a.FastTranspose();
+    cout << "FT: \n"
+         << a;
+    d = a.Add(b);
+    cout << "Ad: \n"
+         << d;
+    a = a.Multiply(c);
+    cout << "M: \n"
+         << a;
     /*
     use >> to build sm object a(4x3, 4 terms), b(4x3, 5 terms), c(3x3, 4 terms)
     demo  <<
