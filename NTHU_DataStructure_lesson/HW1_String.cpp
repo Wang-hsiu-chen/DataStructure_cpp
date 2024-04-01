@@ -1,44 +1,4 @@
-#include <iostream>
-
-using namespace std;
-
-class String
-{
-public:
-    String(char *init, int m);
-    ~String();
-    // constructor using input string init of length m
-    bool operator==(String t); // equality test
-    bool operator!();          // empty test, true or false
-    int Length();              // get the number of characters of *this
-    String Concat(String t);
-    // concatenation with another string t
-    String Substr(int i, int j); // generate a substring i~i+j-1
-    void FailureFunction();
-    int Find(String pat);
-    int FastFind(String pat);
-    // Return an index i such that pat matches the substring
-    // of the object begins at position i.  Return -1 if pat
-    // is empty or not a substring of the object
-    String Delete(int start, int length); // remove length characters beginning
-    // at start
-    String CharDelete(char c); // returns the string with all occurrence of c
-    // removed.
-    int Compare(String y); // compare two strings of letters of alphabet.
-    // return -1 if <y, 0 if =y, and 1 if >y.
-    // If two strings of letter of alphabet, x = (x0,…,xm-1) and y=(y0,…,yn-1)
-    // where xi, yj are letters, then the Compare member function will decide
-    // whether x<y, x=y, or x>y, where x < y means if xi=yi for 0≤i<j and xj<yj
-    // or if xi=yi for 0≤i≤m and m<n. x=y means m=n and xi=yi for 0≤i<n. x>y
-    // means if xi=yi for 0≤i<j and xj>yj or if xi=yi for 0≤i≤n and m>n.
-    friend ostream &operator<<(ostream &os, String &p);
-    friend istream &operator>>(istream &is, String &p);
-
-private:
-    char *str;
-    char *f;
-    int strLength;
-};
+#include "HW1_String.h"
 String::String(char *init, int m)
 {
     str = init;
@@ -236,6 +196,7 @@ istream &operator>>(istream &ins, String &arg)
         cin.get(arg.str[i]);
         // ins >> arg.str[i];
     }
+    cin.get();
     return ins;
 }
 
@@ -244,12 +205,10 @@ int main()
     char *a, *b, *c, enter;
     String strTest(a, 8), strTest1(b, 2), strTest2(c, 0), strOut(c, 0);
     cin >> strTest;
-    cout << strTest << endl;
     cin >> strTest1;
-    cout << strTest1 << endl;
 
-    // strOut = strTest.Substr(2, 4);
-    // cout << "Substr: " << strOut << endl;
+    strOut = strTest.Substr(2, 4);
+    cout << "Substr: " << strOut << endl;
     strTest.CharDelete('d');
     cout << strTest << endl;
     strTest2 = strTest.Delete(2, 4);
