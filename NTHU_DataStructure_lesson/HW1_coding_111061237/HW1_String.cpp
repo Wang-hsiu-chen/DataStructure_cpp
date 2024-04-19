@@ -5,10 +5,6 @@ String::String(char *init, int m)
     str = new char[m];
     strLength = m;
 }
-String::~String()
-{
-    // delete[] str;
-}
 bool String::operator==(String t)
 {
     if (Length() == t.Length())
@@ -198,22 +194,4 @@ istream &operator>>(istream &ins, String &arg)
     }
     cin.get();
     return ins;
-}
-
-int main()
-{
-    char *a, *b, *c, enter;
-    String strTest(a, 8), strTest1(b, 2), strTest2(c, 0), strOut(c, 0);
-    cin >> strTest;
-    cin >> strTest1;
-
-    strOut = strTest.Substr(2, 4);
-    cout << "Substr: " << strOut << endl;
-    strTest.CharDelete('d');
-    cout << strTest << endl;
-    strTest2 = strTest.Delete(2, 4);
-    cout << "Delete: " << strTest << endl;
-    strTest.Concat(strTest1);
-    cout << "Concat: " << strTest << endl;
-    cout << "Compare: " << strTest.Compare(strTest2) << endl;
 }

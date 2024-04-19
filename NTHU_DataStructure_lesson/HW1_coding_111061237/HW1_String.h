@@ -6,7 +6,6 @@ class String
 {
 public:
     String(char *init, int m);
-    ~String();
     // constructor using input string init of length m
     bool operator==(String t); // equality test
     bool operator!();          // empty test, true or false

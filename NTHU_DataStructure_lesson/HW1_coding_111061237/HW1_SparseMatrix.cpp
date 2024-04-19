@@ -73,7 +73,8 @@ SparseMatrix SparseMatrix::Transpose()
                     currentB++;
                 }
     } // end of if(terms >0)
-    return b;
+    *this = b;
+    return *this;
 }
 SparseMatrix SparseMatrix::FastTranspose()
 {
@@ -102,7 +103,8 @@ SparseMatrix SparseMatrix::FastTranspose()
         delete[] rowSize;
         delete[] rowStart;
     } // end of if
-    return b;
+    *this = b;
+    return *this;
 }
 SparseMatrix SparseMatrix::Multiply(SparseMatrix b)
 {
@@ -231,38 +233,4 @@ ostream &operator<<(ostream &outs, SparseMatrix &arg)
     }
     delete[] arrayOut;
     return outs;
-}
-int main()
-{
-    SparseMatrix a(4, 3, 4), b(4, 3, 5), c(3, 4, 4), d(3, 4, 4);
-    ifstream fin;
-    fin.open("input1_2.dat", ios::in);
-    if (!fin.good())
-    {
-        perror("sort_data.dat");
-        exit(0);
-    }
-    fin >> a;
-    fin >> b;
-    fin >> c;
-    fin.close();
-    cout << a << b;
-    a = a.Transpose();
-    cout << "T: \n"
-         << a;
-    a = a.FastTranspose();
-    cout << "FT: \n"
-         << a;
-    d = a.Add(b);
-    cout << "Ad: \n"
-         << d;
-    a = a.Multiply(c);
-    cout << "M: \n"
-         << a;
-    /*
-    use >> to build sm object a(4x3, 4 terms), b(4x3, 5 terms), c(3x3, 4 terms)
-    demo  <<
-    demo  << results of Transpose, Fast Transpose, Add, Mul
-    */
-    return 0;
 }

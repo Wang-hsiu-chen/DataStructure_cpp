@@ -184,28 +184,3 @@ ostream &operator<<(ostream &outs, Polynomial &arg)
     }
     return outs;
 }
-
-int main()
-{
-    Polynomial a, b, c;
-    cin >> a;
-    cin >> b;
-    cout << a << endl;
-    cout << b << endl;
-    cout << a.LeadExp() << endl;
-    cout << a.Eval(1) << " " << a.Eval(2) << endl;
-    c = a.Add(b);
-    cout << c << endl;
-    c = a.Subt(b);
-    cout << c << endl;
-    c = a.Mult(b);
-    cout << c << endl;
-
-    /*
-    construct polynomial objects a, b
-    use >> to build polynomial object a = 2x3 + 3x2 + 4x + 5, b = x3 – x2 + x – 1
-    demo  <<
-    demo  << results of Add, Subt, Mul
-    demo results of a.Exal(1), b.Eval(2), a.Coef(5), b.LeadExp
-    */
-}
