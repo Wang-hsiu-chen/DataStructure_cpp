@@ -97,6 +97,7 @@ void CircleList<T>::DeleteBack()
 template <class T>
 void CircleList<T>::DeleteOdd()
 {
+    // might have problems
     CNode<T> *temp = first;
     while (temp->link != first && temp->link->link != first)
     {

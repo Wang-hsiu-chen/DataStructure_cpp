@@ -192,16 +192,12 @@ void Chain<T>::Concatenate(Chain<T> &b)
 }
 Chain Chain<T>::Deconcatenate(ChainNode<T> *p)
 {
+    // might have problems
     int size = Size();
-    ChainNode<T> *dividNode = first;
     Chain<T> b;
-    while (dividNode->link != p)
-    {
-        dividNode = dividNode->link;
-    }
-    b.first = dividNode->link;
+    b.first = p->link;
     b.last = last;
-    last = dividNode;
+    last = p;
     last->link = NULL;
     return b;
 }
