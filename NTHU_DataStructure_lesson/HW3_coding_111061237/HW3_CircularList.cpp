@@ -1,67 +1,116 @@
 #include "HW3_CircularList.h"
 
 template <class T>
-CircleList() { first = 0; }
+CircleList<T>::CircleList() { first = NULL; }
 template <class T>
-~CircleList()
+CircleList<T>::~CircleList()
 {
-}
-template <class T>
-int Size()
-{
-}
-template <class T>
-void InsertFront()
-{
-
-    CNode<T> *newNode = new CNode<T>(e);
-    if (last)
+    while (first != NULL)
     {
-        newNode->link = last->link;
-        last->link = newNode;
+        CNode<T> *temp = first->link;
+        delete frist;
+        if (temp != NULL)
+            first = temp->link;
     }
-    else
+}
+template <class T>
+int CircleList<T>::Size()
+{
+    int size = 0;
+    if (first == NULL)
+        return 0;
+    CNode<T> *pointer = first;
+    while (pointer->link != first)
+    { // delete first
+        size++;
+        pointer = pointer->link;
+    }
+    return size + 1;
+}
+template <class T>
+void CircleList<T>::InsertFront()
+{
+    if (first == NULL) // empty list
     {
-        last = newNode;
+        CNode<T> *newNode = new CNode<T>;
         newNode->link = newNode;
+        first = newNode;
+    }
+    else if (first != NULL)
+    {
+        CNode<T> *newNode = new CNode<T>;
+        CNode<T> *temp = first;
+        while (temp->link != first)
+            temp = temp->link;
+        newNode->link = first;
+        temp->link = newNode;
+        first = newNode;
     }
 }
 template <class T>
-void InsertBack()
+void CircleList<T>::InsertBack()
 {
-    CNode<T> *newNode = new CNode<T>(e);
-    if (last)
+    if (first == NULL) // empty list
     {
-        newNode->link = last->link;
-        last = last->link = newNode;
-    }
-    else
-    {
-        last = newNode;
+        CNode<T> *newNode = new CNode<T>;
         newNode->link = newNode;
+        first = newNode;
+    }
+    else if (first != NULL)
+    {
+        CNode<T> *newNode = new CNode<T>;
+        CNode<T> *temp = first;
+        while (temp->link != first)
+            temp = temp->link;
+        newNode->link = temp->link;
+        temp->link = newNode;
     }
 }
 template <class T>
-void DeleteFrist()
+void CircleList<T>::DeleteFrist()
+{
+    if (first == NULL)
+        throw "it's a empty list";
+    CNode<T> *temp = first;
+    while (temp->link != first)
+        temp = temp->link;
+    temp->link = first->link;
+    delete first;
+    first = temp->link;
+}
+template <class T>
+void CircleList<T>::DeleteBack()
+{
+    if (first == NULL)
+        throw "it's a empty list";
+    else if (first->link == first)
+    {
+        delete first;
+        return;
+    }
+    CNode<T> *temp = first;
+    while (temp->link->link != first)
+        temp = temp->link;
+    delete temp->link;
+    temp->link = first;
+}
+template <class T>
+void CircleList<T>::DeleteOdd()
+{
+    CNode<T> *temp = first;
+    while (temp->link != first && temp->link->link != first)
+    {
+        temp = temp->link;
+        CNode<T> *deleteNode = temp->link;
+        temp->link = temp->link->link;
+        delete deleteNode;
+    }
+}
+template <class T>
+void CircleList<T>::Deconcatenate(CNode *p)
 {
 }
 template <class T>
-void DeleteBack()
-{
-}
-template <class T>
-void InsertBack()
-{
-}
-template <class T>
-void Delete()
-{
-}
-template <class T>
-void Deconcatenate()
-{
-}
-template <class T>
-void Merge(CircleList<T> &b)
+void CircleList<T>::Merge(CircleList<T> &b)
 {
 }
