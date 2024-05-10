@@ -1,3 +1,6 @@
+#include <iostream>
+using namespace std;
+
 struct Term
 {
     int coef;
@@ -20,48 +23,8 @@ public:
     Polynomial operator+(const Polynomial &b) const;                    //  Create and return the polynomial *this + b
     Polynomial operator-(const Polynomial &b) const;                    //  Create and return the polynomial *this – b
     Polynomial operator*(const Polynomial &b) const;                    //  Create and return the polynomial *this * b
-    double Polynomial::Evaluate(double x) const;
+    double Polynomial::Evaluate(double x) const;                        // Evaluate the polynomial *this and return the result.
 
 private:
     Chain<Term> poly;
 };
-
-Polynomial
-Polynomial::operator+(const Polynomial &b) const
-{
-    Term temp;
-    Chain<Term>::ChainIterator ai = poly.begin(), bi = b.poly.begin();
-    Polynomial c;
-    while (ai && bi)
-    {
-        if (ai->exp == bi->exp)
-        {
-            int sum = ai->coef + bi->coef;
-            if (sum)
-                c.poly.InsertBack(temp.Set(sum, ai->exp));
-            ai++;
-            bi++;
-        }
-        else if (ai->exp < bi->exp)
-        {
-            c.poly.InsertBack(temp.Set(bi->coef, bi->exp));
-            bi++;
-        }
-        else
-        {
-            c.poly.InsertBack(temp.Set(ai->coef, ai->exp));
-            ai++;
-        }
-    }
-    while (ai)
-    {
-        c.poly.InsertBack(temp.Set(ai->coef, ai->exp));
-        ai++;
-    }
-    while (bi)
-    {
-        c.poly.InsertBack(temp.Set(bi->coef, bi->exp));
-        bi++;
-    }
-    return c;
-}
