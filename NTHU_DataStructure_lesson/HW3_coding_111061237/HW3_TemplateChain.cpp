@@ -84,10 +84,23 @@ void Chain<T>::DeleteBack()
 template <class T>
 T &Chain<T>::Get(int index)
 {
+    ChainNode<T> *desiredNode;
+    int currentIndex = 0;
+    desiredNode = first; // gets you to first node
+    while (currentIndex < index)
+        desiredNode = desiredNode->link;
+    return desiredNode->data;
 }
 template <class T>
 T &Chain<T>::Set(int index, const T &e)
 {
+    ChainNode<T> *desiredNode;
+    int currentIndex = 0;
+    desiredNode = first; // gets you to first node
+    while (currentIndex < index)
+        desiredNode = desiredNode->link;
+    desiredNode->data = e;
+    return desiredNode->data;
 }
 template <class T>
 int Chain<T>::IndexOf(const T &e) const
@@ -132,6 +145,10 @@ void Chain<T>::Delete(int index)
     delete deleteNode;
 }
 template <class T>
+void Chain<T>::DeleteOdd()
+{
+}
+template <class T>
 void Chain<T>::Insert(int index, const T &e)
 {
     if (index < 0)
@@ -153,11 +170,76 @@ void Chain<T>::Insert(int index, const T &e)
     }
 }
 template <class T>
+void Chain<T>::DivideMid(Chain<T> &b)
+{
+    int size = Size();
+    ChainNode<T> *midNode = first;
+    for (int i = 0; i < size / 2 - 1; i++)
+    {
+        midNode = midNode->link;
+    }
+    b.first = midNode->link;
+    b.last = last;
+    last = midNode;
+    last->link = NULL;
+}
+template <class T>
 void Chain<T>::Concatenate(Chain<T> &b)
 {
     last->link = b.first;
     delete last;
     last = b.last;
+}
+Chain Chain<T>::Deconcatenate(ChainNode<T> *p)
+{
+    int size = Size();
+    ChainNode<T> *dividNode = first;
+    Chain<T> b;
+    while (dividNode->link != p)
+    {
+        dividNode = dividNode->link;
+    }
+    b.first = dividNode->link;
+    b.last = last;
+    last = dividNode;
+    last->link = NULL;
+    return b;
+}
+template <class T>
+void Chain<T>::Merge(Chain<T> &b)
+{
+    ChainNode<T> *chain1 = first;
+    ChainNode<T> *chain2 = b.first;
+    while (chain1->link != NULL && chain2->link != NULL)
+    {
+        ChainNode<T> *temp = chain1->link;
+        chain1->link = chain2;
+        chain2 = chain2->link;
+        chain1 = chain1->link;
+        chain1->link = temp;
+        chain1 = temp;
+    }
+    if (chain1->link == NULL)
+    {
+        chain1->link = chain2;
+        last = b.last;
+    }
+    else if (chain2->link == NULL)
+    {
+        ChainNode<T> *temp = chain1->link;
+        chain1->link = chain2;
+        chain1 = chain1->link;
+        chain1->link = temp;
+        chain1 = temp;
+    }
+    chain2 = b.first;
+    for (int i = 0; i < b.Size(); i++)
+    {
+        ChainNode<T> *temp = chain2;
+        if (chain2->link != NULL)
+            chain2 = chain2->link;
+        delete temp;
+    }
 }
 template <class T>
 void Chain<T>::Reverse()

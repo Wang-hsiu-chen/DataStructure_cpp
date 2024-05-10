@@ -32,8 +32,12 @@ public:
     T &Set(int index, const T &e);
     int IndexOf(const T &e) const;
     void Delete(int index);
+    void DeleteOdd();
     void Insert(int index, const T &e);
+    void DivideMid(Chain<T> &b);
     void Concatenate(Chain<T> &b);
+    Chain Deconcatenate(ChainNode<T> *p);
+    void Merge(Chain<T> &b);
     void Reverse();
     void Delete(Position p);
     void Insert(Position p, const T &e); // Position means ChainNode*)
