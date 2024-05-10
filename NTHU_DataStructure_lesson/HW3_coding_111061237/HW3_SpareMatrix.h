@@ -1,3 +1,6 @@
+#include <iostream>
+using namespace std;
+
 struct Triple
 {
     int row, col, value;
@@ -32,6 +35,10 @@ MatrixNode::MatrixNode(bool b, Triple *t) // 建構子
 class Matrix
 {
     friend istream &operator>>(istream &, Matrix &);
+    friend ostream &operator<<(ostream &, Matrix &);
+    void operator+(const Matrix &b) const;
+    void operator*(const Matrix &b) const;
+    void Transpose();
 
 public:
     ~Matrix(); // 解構子
