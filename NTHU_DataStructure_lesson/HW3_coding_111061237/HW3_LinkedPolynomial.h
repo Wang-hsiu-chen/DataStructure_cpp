@@ -6,18 +6,20 @@ class Term
 {
     friend class Polynomial;
 
-private:
-    int coef;
-    int exp;
-    Term *link;
+public:
     inline Term Set(int c, int e)
     {
         coef = c;
         exp = e;
         return *this;
     }
-    inline Term GetCoef() { return coef; }
-    inline Term GetExp() { return exp; }
+
+private:
+    int coef;
+    int exp;
+    Term *link;
+    inline int GetCoef() { return coef; }
+    inline int GetExp() { return exp; }
 };
 template <class T>
 class Chain
@@ -101,12 +103,12 @@ public:
     friend ostream &operator<<(ostream &os, Polynomial &x); // Convert x from its linked list representation to its external representation and output it.
     Polynomial::Polynomial(const Polynomial &a);            // copy constructor
     Polynomial::~Polynomial();
-    const Polynomila& Polynomial::operator=(const Polynomial& a) const[assignment operator]; // assign polynomial a to *this.
-    Polynomial::~Polynomial();                                                               // desctructor, return all nodes to available-space list
-    Polynomial operator+(const Polynomial &b) const;                                         //  Create and return the polynomial *this + b
-    Polynomial operator-(const Polynomial &b) const;                                         //  Create and return the polynomial *this – b
-    Polynomial operator*(const Polynomial &b) const;                                         //  Create and return the polynomial *this * b
-    double Polynomial::Evaluate(double x) const;                                             // Evaluate the polynomial *this and return the result.
+    const Polynomial &Polynomial::operator=(const Polynomial &a) const; // assign polynomial a to *this.
+    Polynomial::~Polynomial();                                          // desctructor, return all nodes to available-space list
+    Polynomial operator+(Polynomial &b);                                //  Create and return the polynomial *this + b
+    Polynomial operator-(Polynomial &b);                                //  Create and return the polynomial *this – b
+    Polynomial operator*(Polynomial &b);                                //  Create and return the polynomial *this * b
+    double Polynomial::Evaluate(double x);                              // Evaluate the polynomial *this and return the result.
     int Polynomial::Coef(int e);
     int Polynomial::LeadExp();
 

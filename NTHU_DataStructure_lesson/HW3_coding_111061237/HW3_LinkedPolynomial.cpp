@@ -2,24 +2,25 @@
 
 Polynomial::Polynomial(const Polynomial &a)
 {
-    head = NULL;
+    this->poly.begin() = NULL;
 };
 Polynomial::~Polynomial()
 {
-    while (head != NULL)
+    Chain<Term>::ChainIterator ai = poly.begin();
+    while (ai != NULL)
     {
-        Term *temp = head->link;
-        delete head;
-        if (head != NULL)
-            head = temp->link;
+        Term *temp = ai->link;
+        delete &ai;
+        if (temp != NULL)
+            ai = temp->link;
     }
 }
-Polynomial Polynomial::operator+(const Polynomial &b) const
+Polynomial Polynomial::operator+(Polynomial &b)
 {
     Term temp;
     Chain<Term>::ChainIterator ai = poly.begin(), bi = b.poly.begin();
-    Polynomial c;
-    while (ai && bi)
+    Polynomial c(*this);
+    while (ai != NULL && bi != NULL)
     {
         if (ai->exp == bi->exp)
         {
@@ -40,24 +41,24 @@ Polynomial Polynomial::operator+(const Polynomial &b) const
             ai++;
         }
     }
-    while (ai)
+    while (ai != NULL)
     {
         c.poly.InsertBack(temp.Set(ai->coef, ai->exp));
         ai++;
     }
-    while (bi)
+    while (bi != NULL)
     {
         c.poly.InsertBack(temp.Set(bi->coef, bi->exp));
         bi++;
     }
     return c;
 }
-Polynomial Polynomial::operator-(const Polynomial &b) const
+Polynomial Polynomial::operator-(Polynomial &b)
 {
     Term temp;
     Chain<Term>::ChainIterator ai = poly.begin(), bi = b.poly.begin();
-    Polynomial c;
-    while (ai && bi)
+    Polynomial c(*this);
+    while (ai != NULL && bi != NULL)
     {
         if (ai->exp == bi->exp)
         {
@@ -78,26 +79,27 @@ Polynomial Polynomial::operator-(const Polynomial &b) const
             ai++;
         }
     }
-    while (ai)
+    while (ai != NULL)
     {
         c.poly.InsertBack(temp.Set(ai->coef, ai->exp));
         ai++;
     }
-    while (bi)
+    while (bi != NULL)
     {
         c.poly.InsertBack(temp.Set(-1 * bi->coef, bi->exp));
         bi++;
     }
     return c;
 }
-Polynomial Polynomial::operator*(const Polynomial &b) const
+Polynomial Polynomial::operator*(Polynomial &b)
 {
     Term temp;
+    b.poly.begin();
     Chain<Term>::ChainIterator ai = poly.begin(), bi = b.poly.begin();
-    Polynomial d;
+    Polynomial d(*this);
     for (int i = 0; i < poly.Size(); i++)
     {
-        Polynomial c;
+        Polynomial c(*this);
         for (int j = 0; j < b.poly.Size(); j++)
         {
             int t = ai->coef * bi->coef;
@@ -108,22 +110,14 @@ Polynomial Polynomial::operator*(const Polynomial &b) const
     }
     return *this;
 }
-double Polynomial::Evaluate(double x) const
-{
-    Chain<Term>::ChainIterator ai = poly.begin();
-    int leadExp = ai->exp;
-    int y = Coef(leadExp);
-    for (int i = 1; i < leadExp; i++)
-        y = f * y + Coef(leadExp - i);
-    return y;
-}
+
 int Polynomial::Coef(int e)
 {
     Chain<Term>::ChainIterator ai = poly.begin();
     for (int i = 0; i < poly.Size(); i++)
     {
-        if (ai.exp == e)
-            return ai.coef;
+        if (ai->exp == e)
+            return ai->coef;
         ai++;
     }
     return 0;
@@ -132,9 +126,9 @@ int Polynomial::LeadExp()
 {
     Chain<Term>::ChainIterator ai = poly.begin();
     int leadExp = ai->exp;
-    if (terms <= 1)
+    if (poly.Size() <= 1)
         return leadExp;
-    for (int i = 1; i < terms; i++)
+    for (int i = 1; i < poly.Size(); i++)
     {
         if (ai->exp > leadExp)
             leadExp = ai->exp;
@@ -142,8 +136,18 @@ int Polynomial::LeadExp()
     }
     return leadExp;
 }
+double Polynomial::Evaluate(double x)
+{
+    Chain<Term>::ChainIterator ai = poly.begin();
+    int leadExp = LeadExp();
+    int y = Coef(leadExp);
+    for (int i = 1; i < leadExp; i++)
+        y = x * y + Coef(leadExp - i);
+    return y;
+}
 istream &operator>>(istream &ins, Polynomial &arg)
 {
+    Term temp;
     char oper, plus = '+', lastPlus;
     int coefficient = 0;
     int exponential = 0;
@@ -152,9 +156,9 @@ istream &operator>>(istream &ins, Polynomial &arg)
         lastPlus = plus;
         ins >> coefficient >> oper >> exponential;
         if (lastPlus == '-')
-            arg.poly.InsertBack(-coefficient, exponential);
+            arg.poly.InsertBack(temp.Set(-coefficient, exponential));
         else
-            arg.poly.InsertBack(coefficient, exponential);
+            arg.poly.InsertBack(temp.Set(coefficient, exponential));
         do
         {
             cin.get(plus);
@@ -164,8 +168,7 @@ istream &operator>>(istream &ins, Polynomial &arg)
 }
 ostream &operator<<(ostream &outs, Polynomial &arg)
 {
-    arg.Coef();
-    Chain<Term>::ChainIterator ai = poly.begin();
+    Chain<Term>::ChainIterator ai = arg.poly.begin();
     outs << arg.Coef(arg.LeadExp()) << 'x' << arg.LeadExp();
     if (arg.LeadExp() == 0)
         return outs;
