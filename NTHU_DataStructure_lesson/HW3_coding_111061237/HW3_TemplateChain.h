@@ -20,12 +20,12 @@ public:
     Chain();
     ~Chain(); // desctructor
     // 鏈的處理運算
-    bool IsEmpty();
+    inline bool IsEmpty();
     int Size();
     void InsertHead(const T &e);
     void DeleteHead();
-    const T &Front();
-    const T &Back();
+    inline const T &Front();
+    inline const T &Back();
     void InsertBack(const T &e);
     void DeleteBack();
     T &Get(int index);
@@ -36,7 +36,7 @@ public:
     void Insert(int index, const T &e);
     void DivideMid(Chain<T> &b);
     void Concatenate(Chain<T> &b);
-    Chain Deconcatenate(ChainNode<T> *p);
+    Chain<T> Deconcatenate(ChainNode<T> *p);
     void Merge(Chain<T> &b);
     void Reverse();
     void Delete(Position p);

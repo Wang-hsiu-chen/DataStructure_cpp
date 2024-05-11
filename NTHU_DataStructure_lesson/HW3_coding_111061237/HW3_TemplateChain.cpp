@@ -19,7 +19,7 @@ void Chain<T>::~Chain()
 }
 // 鏈的處理運算
 template <class T>
-bool Chain<T>::IsEmpty()
+inline bool Chain<T>::IsEmpty()
 {
     return (first == last && first == NULL) ? true : false;
 }
@@ -53,12 +53,12 @@ void Chain<T>::DeleteHead()
     first = temp;
 }
 template <class T>
-const T &Chain<T>::Front()
+inline const T &Chain<T>::Front()
 {
     return first->data;
 }
 template <class T>
-const T &Chain<T>::Back()
+inline const T &Chain<T>::Back()
 {
     return last->data;
 }
@@ -147,6 +147,15 @@ void Chain<T>::Delete(int index)
 template <class T>
 void Chain<T>::DeleteOdd()
 {
+    // might have problems
+    ChainNode<T> *temp = first;
+    while (temp->link != NULL && temp->link->link != NULL)
+    {
+        temp = temp->link;
+        ChainNode<T> *deleteNode = temp->link;
+        temp->link = temp->link->link;
+        delete deleteNode;
+    }
 }
 template <class T>
 void Chain<T>::Insert(int index, const T &e)
