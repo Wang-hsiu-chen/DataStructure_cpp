@@ -8,7 +8,7 @@ DblList::~DblList()
 {
     while (head != NULL)
     {
-        CNode<T> *temp = head->right;
+        DblListNode *temp = head->right;
         delete head;
         if (temp != NULL)
             head = temp->right;
