@@ -108,10 +108,54 @@ void CircleList<T>::DeleteOdd()
     }
 }
 template <class T>
-void CircleList<T>::Deconcatenate(CNode *p)
+CNode<T> CircleList<T>::Deconcatenate(CNode<T> *p)
 {
+    // might have problems
+    int size = Size();
+    CircleList<T> b;
+    CNode<T> *temp = p->link;
+    b.first = p->link;
+    p->link = first;
+    while (temp->link != first)
+        temp = temp->link;
+    temp->link = b.first;
+    return b;
 }
 template <class T>
 void CircleList<T>::Merge(CircleList<T> &b)
 {
+    CNode<T> *chain1 = first;
+    CNode<T> *chain2 = b.first;
+    while (chain1->link != first && chain2->link != first)
+    {
+        CNode<T> *temp = chain1->link;
+        chain1->link = chain2;
+        chain2 = chain2->link;
+        chain1 = chain1->link;
+        chain1->link = temp;
+        chain1 = temp;
+    }
+    if (chain1->link == first)
+    {
+        chain1->link = chain2;
+        while (chain2->link != b.first)
+            chain2 = chain2->link;
+        chain2->link = first;
+    }
+    else if (chain2->link == b.first)
+    {
+        CNode<T> *temp = chain1->link;
+        chain1->link = chain2;
+        chain1 = chain1->link;
+        chain1->link = temp;
+        chain1 = temp;
+    }
+    chain2 = b.first;
+    for (int i = 0; i < b.Size(); i++)
+    {
+        CNode<T> *temp = chain2;
+        if (chain2->link != NULL)
+            chain2 = chain2->link;
+        delete temp;
+    }
 }

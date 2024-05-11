@@ -26,7 +26,7 @@ public:
     void DeleteFrist();
     void DeleteBack();
     void DeleteOdd();
-    void Deconcatenate(CNode *p);
+    CNode<T> Deconcatenate(CNode<T> *p);
     void Merge(CircleList<T> &b);
 
 private:
