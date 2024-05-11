@@ -16,18 +16,20 @@ private:
 template <class T>
 class Chain
 {
+    typedef ChainNode<T> Position;
+
 public:
     Chain();
     ~Chain(); // desctructor
     // 鏈的處理運算
-    inline bool IsEmpty();
-    int Size();
-    void InsertHead(const T &e);
-    void DeleteHead();
-    inline const T &Front();
-    inline const T &Back();
-    void InsertBack(const T &e);
-    void DeleteBack();
+    virtual bool IsEmpty();
+    virtual int Size();
+    virtual void InsertHead(const T &e);
+    virtual void DeleteHead();
+    virtual inline const T &Front();
+    virtual inline const T &Back();
+    virtual void InsertBack(const T &e);
+    virtual void DeleteBack();
     T &Get(int index);
     T &Set(int index, const T &e);
     int IndexOf(const T &e) const;
@@ -85,29 +87,44 @@ private:
 };
 
 template <class T>
-class LinkedStack : TemplateChain
+class LinkedStack : public Chain<T>
 {
+    using Chain<T>::IsEmpty;
+    using Chain<T>::Size;
+    using Chain<T>::InsertHead;
+    using Chain<T>::DeleteHead;
+    using Chain<T>::Front;
+    using Chain<T>::Back;
+    using Chain<T>::InsertBack;
+    using Chain<T>::DeleteBack;
+
 public:
-    LinkedStack() { top = 0; }; // constructor
-    void Push(const T &);
+    LinkedStack() { top = NULL; }; // constructor
+    ~LinkedStack(){};
+    // void Pop();
+    // void Push(const T &x);
     T &Top() const;
-    void Pop();
-    bool IsEmpty();
 
 private:
     ChainNode<T> *top;
 };
 
 template <class T>
-class LinkedQueue : TemplateChain
+class LinkedQueue : public Chain<T>
 {
+    using Chain<T>::IsEmpty;
+    using Chain<T>::Size;
+    using Chain<T>::InsertHead;
+    using Chain<T>::DeleteHead;
+    using Chain<T>::Front;
+    using Chain<T>::Back;
+    using Chain<T>::InsertBack;
+    using Chain<T>::DeleteBack;
+
 public:
     LinkedQueue() { front = rear = 0; }; // constructor
-    void Push(const T &);
     T &Front() const;
     T &Rear() const;
-    void Pop();
-    bool IsEmpty();
 
 private:
     ChainNode<T> *front, *rear;

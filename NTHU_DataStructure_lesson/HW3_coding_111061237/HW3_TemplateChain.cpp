@@ -1,12 +1,12 @@
 #include "HW3_TemplateChain.h"
 
 template <class T>
-void Chain<T>::Chain()
+Chain<T>::Chain()
 {
     first = last = NULL;
 }
 template <class T>
-void Chain<T>::~Chain()
+Chain<T>::~Chain()
 {
     // Chain destructor. Delete all nodes
     // in chain.
@@ -122,7 +122,7 @@ int Chain<T>::IndexOf(const T &e) const
 template <class T>
 void Chain<T>::Delete(int index)
 {
-    if (first == 0)
+    if (first == NULL)
         throw "Cannot delete from empty chain";
     ChainNode<T> *deleteNode;
     if (index == 0)
@@ -135,7 +135,7 @@ void Chain<T>::Delete(int index)
         ChainNode<T> *p = first;
         for (int i = 0; i < index - 1; i++)
         {
-            if (p == 0)
+            if (p == NULL)
                 throw "Delete element does not exist";
             p = p->link;
         }
@@ -164,7 +164,7 @@ void Chain<T>::Insert(int index, const T &e)
         throw "Bad insert index";
     if (index == 0)
         // insert at front
-        first = new chainNode<T>(e, first);
+        first = new ChainNode<T>(e, first);
     else
     { // find predecessor of new element
         ChainNode<T> *p = first;
@@ -199,7 +199,8 @@ void Chain<T>::Concatenate(Chain<T> &b)
     delete last;
     last = b.last;
 }
-Chain Chain<T>::Deconcatenate(ChainNode<T> *p)
+template <class T>
+Chain<T> Chain<T>::Deconcatenate(ChainNode<T> *p)
 {
     // might have problems
     int size = Size();
@@ -249,12 +250,91 @@ void Chain<T>::Merge(Chain<T> &b)
 template <class T>
 void Chain<T>::Reverse()
 {
+    ChainNode<T> *left = NULL;
+    ChainNode<T> *pointer = first;
+    ChainNode<T> *right = new ChainNode<T>;
+    while (pointer->link != NULL)
+    {
+        right = pointer->link;
+        pointer->link = left;
+        left = pointer;
+        pointer = right;
+    }
 }
 template <class T>
 void Chain<T>::Delete(Position p)
 {
+    if (p == NULL)
+        throw "Delete element does not exist";
+    ChainNode<T> *temp = first;
+    if (p == first)
+    {
+        temp = p;
+        first = p->link;
+        delete temp;
+        return;
+    }
+    while (temp->link != p)
+    {
+        if (temp == NULL)
+            throw "Delete element does not exist";
+        temp = temp->link;
+    }
+    temp->link = temp->link->link;
+    delete p;
 }
 template <class T>
 void Chain<T>::Insert(Position p, const T &e)
 {
+    ChainNode<T> *temp = first;
+    if (first == NULL)
+        throw "chain is empty";
+    while (temp != p)
+    {
+        temp = temp->link;
+        if (temp == NULL)
+            throw "Insert node doesn't exist";
+    }
+    ChainNode<T> *newNode = new ChainNode<T>;
+    newNode->data = e;
+    newNode->link = temp->link;
+    temp->link = newNode;
+    return;
+}
+
+template <class T>
+inline T &LinkedStack<T>::Top() const
+{
+    if (IsEmpty())
+        throw "Stack empty";
+    top = this->last;
+    return top->data;
+}
+// template <class T>
+// void LinkedStack<T>::Push(const T &x)
+// {
+//     InsertBack(e);
+//     top = top->link;
+// }
+// template <class T>
+// void LinkedStack<T>::Pop()
+// {
+//     DeleteHead();
+//     top =
+// }
+template <class T>
+inline T &LinkedQueue<T>::Front() const
+{
+    if (IsEmpty())
+        throw "Queue empty";
+    front = this->first;
+    return front->data;
+}
+template <class T>
+inline T &LinkedQueue<T>::Rear() const
+{
+    if (IsEmpty())
+        throw "Queue empty";
+    rear = this->last;
+    return rear->data;
 }
