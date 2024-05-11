@@ -42,13 +42,35 @@ void DblList::Concatenate(DblList m)
 }
 void DblList::Push(int x)
 {
+    DblListNode *newNode;
+    newNode->data = x;
+    newNode->right = head;
+    newNode->left = head->left;
+    head->left->right = newNode;
+    head->left = newNode;
 }
 void DblList::Pop()
 {
+    DblListNode *deleteNode = head;
+    head->left->right = head->right;
+    head->right->left = head->left;
+    head = head->right;
+    delete deleteNode;
 }
 void DblList::Inject(int x)
 {
+    DblListNode *newNode;
+    newNode->data = x;
+    newNode->right = head;
+    newNode->left = head->left;
+    head->left->right = newNode;
+    head->left = newNode;
+    head = newNode;
 }
 void DblList::Eject()
 {
+    DblListNode *deleteNode = head->left;
+    deleteNode->left->right = head;
+    head->left = deleteNode->left;
+    delete deleteNode;
 }
