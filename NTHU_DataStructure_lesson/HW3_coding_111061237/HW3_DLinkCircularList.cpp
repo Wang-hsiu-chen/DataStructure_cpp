@@ -2,7 +2,10 @@
 
 DblList::DblList()
 {
-    head = NULL;
+    DblListNode *pointer = new DblListNode;
+    head = pointer;
+    head->right = head;
+    head->left = head;
 }
 DblList::~DblList()
 {
@@ -13,6 +16,31 @@ DblList::~DblList()
         if (temp != NULL)
             head = temp->right;
     }
+}
+int DblList::Size()
+{
+    int size = 0;
+    DblListNode *pointer = head;
+    while (pointer->right != head)
+    { // delete first
+        size++;
+        pointer = pointer->right;
+    }
+    return size;
+}
+DblListNode *DblList::Get(int index)
+{
+    DblListNode *desiredNode;
+    int currentIndex = 0;
+    desiredNode = head->right; // gets you to first node
+    while (currentIndex < index)
+    {
+        if (desiredNode == head)
+            throw "index doesn't exist";
+        desiredNode = desiredNode->right;
+        currentIndex++;
+    }
+    return desiredNode;
 }
 void DblList::Insert(DblListNode *p, DblListNode *x)
 {
@@ -42,11 +70,11 @@ void DblList::Concatenate(DblList m)
 }
 void DblList::Push(int x)
 {
-    DblListNode *newNode;
+    DblListNode *newNode = new DblListNode;
     newNode->data = x;
     newNode->right = head;
-    newNode->left = head->left;
     head->left->right = newNode;
+    newNode->left = head->left;
     head->left = newNode;
 }
 void DblList::Pop()
@@ -59,7 +87,7 @@ void DblList::Pop()
 }
 void DblList::Inject(int x)
 {
-    DblListNode *newNode;
+    DblListNode *newNode = new DblListNode;
     newNode->data = x;
     newNode->right = head;
     newNode->left = head->left;
