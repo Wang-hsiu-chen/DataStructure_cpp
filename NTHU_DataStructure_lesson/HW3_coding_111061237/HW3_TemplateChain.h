@@ -101,9 +101,9 @@ class LinkedStack : public Chain<T>
 public:
     LinkedStack() { top = NULL; }; // constructor
     ~LinkedStack(){};
-    // void Pop();
-    // void Push(const T &x);
-    T &Top() const;
+    void Pop();
+    void Push(T &x);
+    T &Top();
 
 private:
     ChainNode<T> *top;
@@ -123,8 +123,8 @@ class LinkedQueue : public Chain<T>
 
 public:
     LinkedQueue() { front = rear = 0; }; // constructor
-    T &Front() const;
-    T &Rear() const;
+    T &Front();
+    T &Rear();
 
 private:
     ChainNode<T> *front, *rear;

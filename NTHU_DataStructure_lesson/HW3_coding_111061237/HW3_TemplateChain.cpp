@@ -8,13 +8,16 @@ Chain<T>::Chain()
 template <class T>
 Chain<T>::~Chain()
 {
-    // Chain destructor. Delete all nodes
-    // in chain.
-    while (first != NULL)
-    { // delete first
-        ChainNode<T> *next = first->link;
-        delete first;
-        first = next;
+    if (!IsEmpty())
+    {
+        ChainNode<T> *temp = first;
+
+        while (temp != nullptr)
+        {
+            ChainNode<T> *deleteNode = temp;
+            temp = temp->link;
+            delete deleteNode;
+        }
     }
 }
 // 鏈的處理運算
@@ -26,13 +29,33 @@ inline bool Chain<T>::IsEmpty()
 template <class T>
 int Chain<T>::Size()
 {
+    ChainNode<T> *list = new ChainNode<T>;
+    list->data = 20;
+    ChainNode<T> *ptr = new ChainNode<T>;
+    ptr->data = 28;
+    ptr->link = NULL;
+    list->link = ptr;
+    ptr = new ChainNode<T>;
+    ptr->data = 30;
+    ptr->link = list;
+    list = ptr;
+    ptr = new ChainNode<T>;
+    ptr->data = 42;
+    ptr->link = list->link;
+    list->link = ptr;
+    ptr = list;
+    while (ptr != NULL)
+    {
+        cout << ptr->data << endl;
+        ptr = ptr->link;
+    }
+
     int size = 0;
     ChainNode<T> *pointer = first;
     while (pointer != NULL)
     { // delete first
         size++;
-        ChainNode<T> *next = pointer->link;
-        pointer = next;
+        pointer = pointer->link;
     }
     return size;
 }
@@ -43,6 +66,8 @@ void Chain<T>::InsertHead(const T &e)
     head->data = e;
     head->link = first;
     first = head;
+    if (first->link == NULL)
+        last = first;
 }
 template <class T>
 void Chain<T>::DeleteHead()
@@ -64,11 +89,14 @@ inline const T &Chain<T>::Back()
 template <class T>
 void Chain<T>::InsertBack(const T &e)
 {
-    ChainNode<T> *back = new ChainNode<T>;
-    back->data = e;
-    back->link = NULL;
-    last->link = back;
-    last = back;
+    ChainNode<T> *newNode = new ChainNode<T>;
+    newNode->data = e;
+    newNode->link = NULL;
+    if (first == NULL)
+        first = last = newNode;
+    else
+        last->link = newNode;
+    last = newNode;
 }
 template <class T>
 void Chain<T>::DeleteBack()
@@ -87,17 +115,26 @@ T &Chain<T>::Get(int index)
     int currentIndex = 0;
     desiredNode = first; // gets you to first node
     while (currentIndex < index)
+    {
+        if (desiredNode == NULL)
+            throw "index doesn't exist";
         desiredNode = desiredNode->link;
+        currentIndex++;
+    }
     return desiredNode->data;
 }
 template <class T>
 T &Chain<T>::Set(int index, const T &e)
 {
-    ChainNode<T> *desiredNode;
+    ChainNode<T> *desiredNode = first; // gets you to first node
     int currentIndex = 0;
-    desiredNode = first; // gets you to first node
     while (currentIndex < index)
+    {
+        if (desiredNode == NULL)
+            throw "index doesn't exist";
         desiredNode = desiredNode->link;
+        currentIndex++;
+    }
     desiredNode->data = e;
     return desiredNode->data;
 }
@@ -155,26 +192,29 @@ void Chain<T>::DeleteOdd()
         temp->link = temp->link->link;
         delete deleteNode;
     }
+    while (temp->link != NULL)
+        temp = temp->link;
+    last = temp;
 }
 template <class T>
 void Chain<T>::Insert(int index, const T &e)
 {
     if (index < 0)
         throw "Bad insert index";
-    if (index == 0)
-        // insert at front
-        first = new ChainNode<T>(e, first);
     else
     { // find predecessor of new element
         ChainNode<T> *p = first;
         for (int i = 0; i < index - 1; i++)
         {
-            if (p == 0)
+            if (p == NULL)
                 throw "Bad insert index";
-            p = p->next;
+            p = p->link;
         }
         // insert after p
-        p->link = new ChainNode<T>(e, p->link);
+        ChainNode<T> *newNode = new ChainNode<T>;
+        newNode->data = e;
+        newNode->link = p->link;
+        p->link = newNode;
     }
 }
 template <class T>
@@ -195,8 +235,8 @@ template <class T>
 void Chain<T>::Concatenate(Chain<T> &b)
 {
     last->link = b.first;
-    delete last;
     last = b.last;
+    return;
 }
 template <class T>
 Chain<T> Chain<T>::Deconcatenate(ChainNode<T> *p)
@@ -237,20 +277,14 @@ void Chain<T>::Merge(Chain<T> &b)
         chain1->link = temp;
         chain1 = temp;
     }
-    chain2 = b.first;
-    for (int i = 0; i < b.Size(); i++)
-    {
-        ChainNode<T> *temp = chain2;
-        if (chain2->link != NULL)
-            chain2 = chain2->link;
-        delete temp;
-    }
+    b.first = NULL;
 }
 template <class T>
 void Chain<T>::Reverse()
 {
     ChainNode<T> *left = NULL;
     ChainNode<T> *pointer = first;
+    ChainNode<T> *temp = first;
     ChainNode<T> *right = new ChainNode<T>;
     while (pointer->link != NULL)
     {
@@ -259,6 +293,9 @@ void Chain<T>::Reverse()
         left = pointer;
         pointer = right;
     }
+    pointer->link = left;
+    first = right;
+    last = temp;
 }
 template <class T>
 void Chain<T>::Delete(Position p)
@@ -301,39 +338,39 @@ void Chain<T>::Insert(Position p, const T &e)
     return;
 }
 
-template <class T>
-inline T &LinkedStack<T>::Top() const
-{
-    if (IsEmpty())
-        throw "Stack empty";
-    top = this->last;
-    return top->data;
-}
 // template <class T>
-// void LinkedStack<T>::Push(const T &x)
+// inline T &LinkedStack<T>::Top()
+// {
+//     if (this->IsEmpty())
+//         throw "Stack empty";
+//     // top = this->Back();
+//     return ;
+// }
+// template <class T>
+// void LinkedStack<T>::Push(T &e)
 // {
 //     InsertBack(e);
-//     top = top->link;
+//     // top = this->last;
 // }
 // template <class T>
 // void LinkedStack<T>::Pop()
 // {
-//     DeleteHead();
-//     top =
+//     DeleteBack();
+//     top = this->last;
 // }
-template <class T>
-inline T &LinkedQueue<T>::Front() const
-{
-    if (IsEmpty())
-        throw "Queue empty";
-    front = this->first;
-    return front->data;
-}
-template <class T>
-inline T &LinkedQueue<T>::Rear() const
-{
-    if (IsEmpty())
-        throw "Queue empty";
-    rear = this->last;
-    return rear->data;
-}
+// template <class T>
+// inline T &LinkedQueue<T>::Front()
+// {
+//     if (IsEmpty())
+//         throw "Queue empty";
+//     front = this->first;
+//     return front->data;
+// }
+// template <class T>
+// inline T &LinkedQueue<T>::Rear()
+// {
+//     if (IsEmpty())
+//         throw "Queue empty";
+//     rear = this->last;
+//     return rear->data;
+// }
