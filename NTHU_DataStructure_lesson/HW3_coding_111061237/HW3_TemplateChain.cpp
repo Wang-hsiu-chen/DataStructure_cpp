@@ -39,7 +39,7 @@ int Chain<T>::Size()
 template <class T>
 void Chain<T>::InsertHead(const T &e)
 {
-    ChainNode<T> *head;
+    ChainNode<T> *head = new ChainNode<T>;
     head->data = e;
     head->link = first;
     first = head;
@@ -47,8 +47,7 @@ void Chain<T>::InsertHead(const T &e)
 template <class T>
 void Chain<T>::DeleteHead()
 {
-    ChainNode<T> *temp;
-    temp = first->link;
+    ChainNode<T> *temp = first->link;
     delete first;
     first = temp;
 }
@@ -65,7 +64,7 @@ inline const T &Chain<T>::Back()
 template <class T>
 void Chain<T>::InsertBack(const T &e)
 {
-    ChainNode<T> *back;
+    ChainNode<T> *back = new ChainNode<T>;
     back->data = e;
     back->link = NULL;
     last->link = back;
