@@ -1,117 +1,74 @@
 #include <iostream>
 using namespace std;
 
-class Polynomial; // 前向宣告
+template <class T>
+class HeaderCircularList;
+
+class Polynomial;
 class Term
 {
-    friend class Polynomial;
-
 public:
-    inline Term Set(int c, int e)
-    {
-        coef = c;
-        exp = e;
-        return *this;
-    }
-
-private:
     int coef;
     int exp;
-    Term *link;
-    inline int GetCoef() { return coef; }
-    inline int GetExp() { return exp; }
+    Term Set(int c, int e);
 };
-template <class T>
-class Chain
-{
-public:
-    int Size()
-    {
-        int size = 0;
-        if (head == NULL)
-            return 0;
-        Term *pointer = head;
-        while (pointer->link != head)
-        { // delete first
-            size++;
-            pointer = pointer->link;
-        }
-        return size + 1;
-    }
-    void InsertBack(const T &node)
-    {
-        if (head == NULL) // empty list
-        {
-            head = node;
-            head->link = head;
-        }
-        else if (head != NULL)
-        {
-            Term *temp = head;
-            while (temp->link != head)
-                temp = temp->link;
-            node->link = temp->link;
-            temp->link = node;
-        }
-    }
-    class ChainIterator
-    {
-    public: // typedefs required by C++ for a forward iterator
-        // Constructor
-        ChainIterator(Term *startNode = 0)
-        {
-            current = startNode;
-        }
-        // Dereferencing operators
-        T &operator*() const { return current; }
-        T *operator->() const { return &current; }
-        // Increment
-        ChainIterator &operator++() // preincrement
-        {
-            current = current->link;
-            return *this;
-        }
-        ChainIterator &operator++(int) // postincrement
-        {
-            ChainIterator old = *this;
-            current = current->link;
-            return old;
-        }
-        // Equality test
-        bool operator!=(const ChainIterator r)
-        {
-            return current != r.current;
-        }
-        bool operator==(const ChainIterator r)
-        {
-            return current == r.current;
-        }
 
-    private:
-        Term *current;
-    };
-    ChainIterator begin() { return ChainIterator(first); }
-    ChainIterator end() { return ChainIterator(0); }
+template <class T>
+class ChainNode
+{
+    friend class Polynomial;
+    friend class HeaderCircularList<T>;
+    template <class U>
+    friend ostream &operator<<(ostream &os, HeaderCircularList<U> &L);
+    friend istream &operator>>(istream &is, Polynomial &polynomial);
+    friend ostream &operator<<(ostream &os, Polynomial &polynomial);
 
 private:
-    Term *head;
+    T data;
+    ChainNode<T> *link;
 };
+
+template <class T>
+class HeaderCircularList
+{
+    friend class Polynomial;
+    template <class U>
+    friend ostream &operator<<(ostream &os, HeaderCircularList<U> &L);
+    friend istream &operator>>(istream &is, Polynomial &polynomial);
+    friend ostream &operator<<(ostream &os, Polynomial &polynomial);
+
+public:
+    HeaderCircularList();
+    ~HeaderCircularList();
+    int count();
+    void insertFront(T e);
+    void insertBack(T e);
+    void deleteFirst();
+    void deleteLast();
+    ChainNode<T> *GetNode();
+    void RetNode(ChainNode<T> *&x);
+
+private:
+    ChainNode<T> *header;
+    ChainNode<T> *av;
+};
+
 class Polynomial
 {
+    friend istream &operator>>(istream &is, Polynomial &polynomial);
+    friend ostream &operator<<(ostream &os, Polynomial &polynomial);
+
 public:
-    friend istream &operator>>(istream &is, Polynomial &x); // Read in an input polynomial and convert it to its circular list representation using a header node.
-    friend ostream &operator<<(ostream &os, Polynomial &x); // Convert x from its linked list representation to its external representation and output it.
-    Polynomial::Polynomial(const Polynomial &a);            // copy constructor
-    Polynomial::~Polynomial();
-    const Polynomial &Polynomial::operator=(const Polynomial &a) const; // assign polynomial a to *this.
-    Polynomial::~Polynomial();                                          // desctructor, return all nodes to available-space list
-    Polynomial operator+(Polynomial &b);                                //  Create and return the polynomial *this + b
-    Polynomial operator-(Polynomial &b);                                //  Create and return the polynomial *this – b
-    Polynomial operator*(Polynomial &b);                                //  Create and return the polynomial *this * b
-    double Polynomial::Evaluate(double x);                              // Evaluate the polynomial *this and return the result.
-    int Polynomial::Coef(int e);
-    int Polynomial::LeadExp();
+    Polynomial(){};
+    ~Polynomial();
+    Polynomial(const Polynomial &a);
+    const Polynomial &operator=(const Polynomial &a);
+    Polynomial operator+(const Polynomial &b) const;
+    Polynomial operator-(const Polynomial &b) const;
+    Polynomial operator*(const Polynomial &b) const;
+    void Set(Term);
+    double Evaluate(double x) const;
 
 private:
-    Chain<Term> poly;
+    HeaderCircularList<Term> poly;
 };
