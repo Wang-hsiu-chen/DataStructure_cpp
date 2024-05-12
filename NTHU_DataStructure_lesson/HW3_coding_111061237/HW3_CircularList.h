@@ -20,15 +20,16 @@ template <class T>
 class CircleList
 {
 public:
-    CircleList() { first = 0; } // 建構子將first, last初始化成0
-    ~CircleList();              // desctructor
+    CircleList();  // 建構子將first, last初始化成0
+    ~CircleList(); // desctructor
     // 鏈的處理運算
     int Size();
-    void InsertFront();
-    void InsertBack();
-    void DeleteFrist();
+    void InsertFront(const T &e);
+    void InsertBack(const T &e);
+    void DeleteFirst();
     void DeleteBack();
     void DeleteOdd();
+    T &Get(int index);
     CNode<T> Deconcatenate(CNode<T> *p);
     void Merge(CircleList<T> &b);
 
@@ -39,15 +40,16 @@ template <class T>
 class CircleListHeader
 {
 public:
-    CircleListHeader() { head = 0; } // 建構子將first, last初始化成0
-    ~CircleListHeader();             // desctructor
+    CircleListHeader();  // 建構子將first, last初始化成0
+    ~CircleListHeader(); // desctructor
     // 鏈的處理運算
     int Size();
-    void InsertFront();
-    void InsertBack();
-    void DeleteFrist();
+    void InsertFront(const T &e);
+    void InsertBack(const T &e);
+    void DeleteFirst();
     void DeleteBack();
     void DeleteOdd();
+    T &Get(int index);
     CNode<T> Deconcatenate(CNode<T> *p);
     void Merge(CircleListHeader<T> &b);
 

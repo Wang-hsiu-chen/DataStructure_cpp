@@ -7,10 +7,10 @@ CircleList<T>::~CircleList()
 {
     while (first != NULL)
     {
-        CNode<T> *temp = first->link;
-        delete frist;
-        if (temp != NULL)
-            first = temp->link;
+        CNode<T> *temp = first;
+        if (first->link != NULL)
+            first = first->link;
+        delete temp;
     }
 }
 template <class T>
@@ -28,12 +28,13 @@ int CircleList<T>::Size()
     return size + 1;
 }
 template <class T>
-void CircleList<T>::InsertFront()
+void CircleList<T>::InsertFront(const T &e)
 {
     if (first == NULL) // empty list
     {
         CNode<T> *newNode = new CNode<T>;
         newNode->link = newNode;
+        newNode->data = e;
         first = newNode;
     }
     else if (first != NULL)
@@ -43,18 +44,21 @@ void CircleList<T>::InsertFront()
         while (temp->link != first)
             temp = temp->link;
         newNode->link = first;
+        newNode->data = e;
         temp->link = newNode;
         first = newNode;
     }
 }
 template <class T>
-void CircleList<T>::InsertBack()
+void CircleList<T>::InsertBack(const T &e)
 {
     if (first == NULL) // empty list
     {
         CNode<T> *newNode = new CNode<T>;
         newNode->link = newNode;
+        newNode->data = e;
         first = newNode;
+        newNode->link = newNode;
     }
     else if (first != NULL)
     {
@@ -63,11 +67,12 @@ void CircleList<T>::InsertBack()
         while (temp->link != first)
             temp = temp->link;
         newNode->link = temp->link;
+        newNode->data = e;
         temp->link = newNode;
     }
 }
 template <class T>
-void CircleList<T>::DeleteFrist()
+void CircleList<T>::DeleteFirst()
 {
     if (first == NULL)
         throw "it's a empty list";
@@ -106,6 +111,21 @@ void CircleList<T>::DeleteOdd()
         temp->link = temp->link->link;
         delete deleteNode;
     }
+}
+template <class T>
+T &CircleList<T>::Get(int index)
+{
+    CNode<T> *desiredNode;
+    int currentIndex = 0;
+    desiredNode = first; // gets you to first node
+    while (currentIndex < index)
+    {
+        if (desiredNode == NULL)
+            throw "index doesn't exist";
+        desiredNode = desiredNode->link;
+        currentIndex++;
+    }
+    return desiredNode->data;
 }
 template <class T>
 CNode<T> CircleList<T>::Deconcatenate(CNode<T> *p)
@@ -150,14 +170,26 @@ void CircleList<T>::Merge(CircleList<T> &b)
         chain1->link = temp;
         chain1 = temp;
     }
-    chain2 = b.first;
-    for (int i = 0; i < b.Size(); i++)
+    b.first = NULL;
+}
+template <class T>
+CircleListHeader<T>::CircleListHeader()
+{
+    CNode<T> *pointer = new CNode<T>;
+    head = pointer;
+    head->link = head;
+}
+template <class T>
+CircleListHeader<T>::~CircleListHeader()
+{
+    CNode<T> *pointer = head->link;
+    while (head->link != head)
     {
-        CNode<T> *temp = chain2;
-        if (chain2->link != NULL)
-            chain2 = chain2->link;
-        delete temp;
+        pointer = head->link;
+        head->link = head->link->link;
+        delete pointer;
     }
+    delete head;
 }
 template <class T>
 int CircleListHeader<T>::Size()
@@ -172,24 +204,26 @@ int CircleListHeader<T>::Size()
     return size;
 }
 template <class T>
-void CircleListHeader<T>::InsertFront()
+void CircleListHeader<T>::InsertFront(const T &e)
 {
     CNode<T> *newNode = new CNode<T>;
     newNode->link = head->link;
+    newNode->data = e;
     head->link = newNode;
 }
 template <class T>
-void CircleListHeader<T>::InsertBack()
+void CircleListHeader<T>::InsertBack(const T &e)
 {
     CNode<T> *newNode = new CNode<T>;
     CNode<T> *temp = head;
     while (temp->link != head)
         temp = temp->link;
     newNode->link = head;
+    newNode->data = e;
     temp->link = newNode;
 }
 template <class T>
-void CircleListHeader<T>::DeleteFrist()
+void CircleListHeader<T>::DeleteFirst()
 {
     if (head == head->link)
         throw "it's a empty list";
@@ -222,6 +256,21 @@ void CircleListHeader<T>::DeleteOdd()
         temp->link = temp->link->link;
         delete deleteNode;
     }
+}
+template <class T>
+T &CircleListHeader<T>::Get(int index)
+{
+    CNode<T> *desiredNode;
+    int currentIndex = 0;
+    desiredNode = head; // gets you to first node
+    while (currentIndex < index)
+    {
+        if (desiredNode == NULL)
+            throw "index doesn't exist";
+        desiredNode = desiredNode->link;
+        currentIndex++;
+    }
+    return desiredNode->data;
 }
 template <class T>
 CNode<T> CircleListHeader<T>::Deconcatenate(CNode<T> *p)
