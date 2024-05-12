@@ -159,3 +159,119 @@ void CircleList<T>::Merge(CircleList<T> &b)
         delete temp;
     }
 }
+template <class T>
+int CircleListHeader<T>::Size()
+{
+    int size = 0;
+    CNode<T> *pointer = head;
+    while (pointer->link != head)
+    { // delete first
+        size++;
+        pointer = pointer->link;
+    }
+    return size;
+}
+template <class T>
+void CircleListHeader<T>::InsertFront()
+{
+    CNode<T> *newNode = new CNode<T>;
+    newNode->link = head->link;
+    head->link = newNode;
+}
+template <class T>
+void CircleListHeader<T>::InsertBack()
+{
+    CNode<T> *newNode = new CNode<T>;
+    CNode<T> *temp = head;
+    while (temp->link != head)
+        temp = temp->link;
+    newNode->link = head;
+    temp->link = newNode;
+}
+template <class T>
+void CircleListHeader<T>::DeleteFrist()
+{
+    if (head == head->link)
+        throw "it's a empty list";
+    CNode<T> *deleteNode = head->link;
+    head->link = head->link->link;
+    delete deleteNode;
+}
+template <class T>
+void CircleListHeader<T>::DeleteBack()
+{
+    if (head == head->link)
+        throw "it's a empty list";
+    CNode<T> *temp = head;
+    while (temp->link->link != head)
+        temp = temp->link;
+    delete temp->link;
+    temp->link = head;
+}
+template <class T>
+void CircleListHeader<T>::DeleteOdd()
+{
+    // might have problems
+    if (head == head->link)
+        throw "it's a empty list";
+    CNode<T> *temp = head->link;
+    while (temp->link != head && temp->link->link != head)
+    {
+        temp = temp->link;
+        CNode<T> *deleteNode = temp->link;
+        temp->link = temp->link->link;
+        delete deleteNode;
+    }
+}
+template <class T>
+CNode<T> CircleListHeader<T>::Deconcatenate(CNode<T> *p)
+{
+    // might have problems
+    int size = Size();
+    CircleListHeader<T> b;
+    CNode<T> *temp = p->link;
+    b.head->link = p->link;
+    p->link = head;
+    while (temp->link != head)
+        temp = temp->link;
+    temp->link = b.head;
+    return b;
+}
+template <class T>
+void CircleListHeader<T>::Merge(CircleListHeader<T> &b)
+{
+    CNode<T> *chain1 = head;
+    CNode<T> *chain2 = b.head;
+    while (chain1->link != head && chain2->link != head)
+    {
+        CNode<T> *temp = chain1->link;
+        chain1->link = chain2;
+        chain2 = chain2->link;
+        chain1 = chain1->link;
+        chain1->link = temp;
+        chain1 = temp;
+    }
+    if (chain1->link == head)
+    {
+        chain1->link = chain2;
+        while (chain2->link != b.head)
+            chain2 = chain2->link;
+        chain2->link = head;
+    }
+    else if (chain2->link == b.head)
+    {
+        CNode<T> *temp = chain1->link;
+        chain1->link = chain2;
+        chain1 = chain1->link;
+        chain1->link = temp;
+        chain1 = temp;
+    }
+    chain2 = b.head;
+    for (int i = 0; i < b.Size(); i++)
+    {
+        CNode<T> *temp = chain2;
+        if (chain2->link != NULL)
+            chain2 = chain2->link;
+        delete temp;
+    }
+}
