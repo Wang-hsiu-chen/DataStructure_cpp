@@ -1,7 +1,8 @@
 #include "HW3_SpareMatrix.h"
 
 Matrix::~Matrix()
-{ // Return all nodes to the av list, which is a chain linked
+{
+    // Return all nodes to the av list, which is a chain linked
     // via the right field.
     // av is a static variable pointing to the first of the av list.
     if (!headnode)
@@ -35,9 +36,9 @@ istream &operator>>(istream &is, Matrix &matrix)
     MatrixNode **head = new MatrixNode *[p];
     for (int i = 0; i < p; i++)
         head[i] = new MatrixNode(true, 0);
-    int currentRow = 0;           // start from row 0
-    MatrixNode *last = head[0];   // last node in current row
-    for (i = 0; i < s.value; i++) // input triples
+    int currentRow = 0;               // start from row 0
+    MatrixNode *last = head[0];       // last node in current row
+    for (int i = 0; i < s.value; i++) // input triples
     {
         Triple t;
         is >> t.row >> t.col >> t.value;
@@ -53,14 +54,20 @@ istream &operator>>(istream &is, Matrix &matrix)
         // use head[]->next as col list last, link into column list
     } // end of for
     last->right = head[currentRow]; // close last row
-    for (i = 0; i < s.col; i++)
-        head[i]->next->down = head[i] // close all column lists
-                                      // link the header nodes together
-                              for (i = 0; i < p; i++)
-                                  head[i]
-                                      ->next = head[i + 1];
+    for (int i = 0; i < s.col; i++)
+        head[i]->next->down = head[i]; // close all column lists
+                                       // link the header nodes together
+    for (int i = 0; i < p; i++)
+        head[i]->next = head[i + 1];
     head[p - 1]->next = matrix.headnode;
     matrix.headnode->right = head[0];
     delete[] head;
     return is;
+}
+ostream &operator<<(ostream &is, Matrix &matrix)
+{
+    for (int i = 0; i < matrix.headnode->triple.col; i++)
+        head[i]->next->down = head[i];
+    for (int i = 0; i < p; i++)
+        head[i]->next = head[i + 1];
 }

@@ -44,4 +44,5 @@ public:
     ~Matrix(); // 解構子
 private:
     MatrixNode *headnode;
+    MatrixNode *av;
 };
