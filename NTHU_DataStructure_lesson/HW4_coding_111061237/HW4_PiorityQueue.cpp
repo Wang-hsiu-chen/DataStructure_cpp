@@ -66,7 +66,13 @@ void MaxHeap<T>::Pop()
     }
     heap[currentNode] = lastE;
 }
-
+template <class T>
+void MaxHeap<T>::OutputHeap()
+{
+    for (int i = 1; i <= heapSize; i++)
+        cout << heap[i] << " ";
+    cout << endl;
+}
 template <class T>
 MinHeap<T>::MinHeap(int theCapacity) : capacity(theCapacity), heapSize(0)
 {

@@ -24,6 +24,7 @@ public:
     const T &Top() const;          // return reference to the max
     void Push(const T &);
     void Pop();
+    void OutputHeap();
 
 private:
     T *heap;      // element array
