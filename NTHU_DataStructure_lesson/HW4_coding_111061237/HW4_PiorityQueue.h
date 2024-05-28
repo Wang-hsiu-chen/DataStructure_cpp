@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 
+// some function might have problem
 template <class T>
 class MaxPQ
 {
@@ -24,6 +25,7 @@ public:
     const T &Top() const;          // return reference to the max
     void Push(const T &);
     void Pop();
+    MaxHeap(int heapsize, T arr[]); // might has problem
     void OutputHeap();
 
 private:
@@ -40,6 +42,7 @@ public:
     const T &Top() const;          // return reference to the max
     void Push(const T &);
     void Pop();
+    void Initialize();
 
 private:
     T *heap;      // element array
