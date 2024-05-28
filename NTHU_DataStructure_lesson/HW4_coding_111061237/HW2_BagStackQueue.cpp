@@ -203,3 +203,15 @@ inline int Queue<T>::Size() const
     else
         return result;
 }
+template <class T>
+inline T &Queue<T>::Front() const
+{
+    if (IsEmpty())
+        throw "Queue is empty. No front element.";
+    return array[(front + 1) % capacity]; // front unchanged
+}
+template <class T>
+bool Queue<T>::IsEmpty() const
+{
+    return (Size() == 0);
+}

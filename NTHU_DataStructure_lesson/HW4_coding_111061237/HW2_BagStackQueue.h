@@ -25,7 +25,6 @@ protected:
 template <class T>
 class Stack : public Bag<T>
 {
-    using Bag<T>::IsEmpty;
     using Bag<T>::capacity;
     using Bag<T>::array;
     using Bag<T>::top;
@@ -41,13 +40,14 @@ public:
     ~Stack();
     void Pop();
     T &Top() const;
+    using Bag<T>::IsEmpty;
 };
 
 // Queue
 template <class T>
 class Queue : public Bag<T>
 {
-    using Bag<T>::IsEmpty;
+    // using Bag<T>::IsEmpty;
     using Bag<T>::capacity;
     using Bag<T>::array;
     template <class U>
@@ -63,6 +63,8 @@ public:
     void Pop();
     int Size() const;
     void Push(const T &item);
+    T &Front() const;
+    bool IsEmpty() const;
 
 protected:
     int front, rear;

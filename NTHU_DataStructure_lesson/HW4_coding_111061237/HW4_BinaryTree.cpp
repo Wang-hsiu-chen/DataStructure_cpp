@@ -2,9 +2,32 @@
 #include "HW4_BinaryTree.h"
 
 template <class T>
+Tree<T>::Tree() // Copy constructor
+{
+    root = NULL;
+}
+template <class T>
 Tree<T>::Tree(const Tree<T> &s) // Copy constructor
 {
     root = Copy(s.root);
+}
+template <class T>
+Tree<T>::Tree(Tree<T> &bt1, T item, Tree<T> &bt2)
+{
+    root = new TreeNode<T>;
+    root->data = item;
+    root->leftChild = bt1.root;
+    root->rightChild = bt2.root;
+}
+template <class T>
+bool Tree<T>::IsEmpty()
+{
+    return (this->root == NULL) ? true : false;
+}
+template <class T>
+T Tree<T>::RootData()
+{
+    return this->root->data;
 }
 template <class T>
 void Tree<T>::Inorder()
@@ -68,6 +91,24 @@ void Tree<T>::LevelOrder()
         currentNode = q.Front();
         q.Pop();
     }
+}
+template <class T>
+Tree<T> Tree<T>::RightSubtree()
+{
+    Tree<T> rightTree(*this);
+    rightTree.root = root->rightChild;
+    return rightTree;
+    // Tree right;
+    // right.root = root->rightChild;
+
+    // return right;
+}
+template <class T>
+Tree<T> Tree<T>::LeftSubtree()
+{
+    Tree<T> leftTree(*this);
+    leftTree.root = root->leftChild;
+    return leftTree;
 }
 template <class T>
 void Tree<T>::NonrecInorder()
@@ -162,7 +203,7 @@ void Tree<T>::NoStackInorder()
                     av->rightChild = top;
                     top = av;
                     lastRight = q;
-                    r = q->leftchild;
+                    r = q->leftChild;
                     q->leftChild = p;
                     r1 = q->rightChild;
                     q->rightChild = r;
@@ -174,16 +215,28 @@ void Tree<T>::NoStackInorder()
     } // 外圈while結束
 }
 template <class T>
-bool Tree<T>::operator==(const Tree &t) const
+bool Tree<T>::operator==(const Tree &t)
 {
     return Equal(root, t.root);
 }
 template <class T>
 TreeNode<T> *Tree<T>::Copy(TreeNode<T> *p)
 { // Return a pointer to an exact copy of the tree rooted at p
-    if (p == NULL)
-        return 0;
-    return new TreeNode<T>(p->data, Copy(p->leftChild), Copy(p->rightChild));
+    if (!p)
+        return 0; // a null pointer empty BT
+    TreeNode<T> *newroot = new TreeNode<T>;
+    newroot->data = p->data;
+    newroot->leftChild = p->leftChild;
+    newroot->rightChild = p->rightChild;
+
+    return newroot;
+}
+template <class T>
+bool Tree<T>::Equal(const Tree<T> &t)
+{
+    if ((t.root == NULL) && (this->root == NULL)) // two empty trees
+        return true;
+    return ((t.root && this->root) && (t.root->data == this->root->data) && Equal(t.root->leftChild, this->root->leftChild) && Equal(t.root->rightChild, this->root->rightChild));
 }
 template <class T>
 bool Tree<T>::Equal(TreeNode<T> *a, TreeNode<T> *b)
