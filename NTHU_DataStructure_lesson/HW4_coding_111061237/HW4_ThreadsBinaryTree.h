@@ -1,6 +1,10 @@
 #include <iostream>
 using namespace std;
 
+// all functions need to be checked again
+// some functions haven't be implement.
+template <class T>
+class InorderIterator;
 template <class T>
 class ThreadsTree;
 template <class T>
@@ -8,11 +12,25 @@ class ThreadsTreeNode
 {
     friend class ThreadsTree<T>;
     friend class InorderIterator<T>; // inorder iterator
+public:
+    ThreadsTreeNode(const T &value);
+
 private:
     T data;
     ThreadsTreeNode<T> *leftChild;
     ThreadsTreeNode<T> *rightChild;
+    bool leftThread;
+    bool rightThread;
 };
+template <class T>
+ThreadsTreeNode<T>::ThreadsTreeNode(const T &value)
+{
+    data = value;
+    leftThread = true;
+    leftChild = NULL;
+    rightThread = true;
+    rightChild = NULL;
+}
 
 template <class T>
 class ThreadsTree
@@ -20,14 +38,16 @@ class ThreadsTree
     friend class InorderIterator<T>; // inorder iterator
 public:
     ThreadsTree(); // constructor for an empty binary tree
-    ThreadsTree(ThreadsTree<T> &bt1, T &item, ThreadsTree<T> &bt2);
+    ThreadsTree(ThreadsTree<T> &bt1, T item, ThreadsTree<T> &bt2);
     ThreadsTree(const ThreadsTree<T> &); // copy constructor
     // constructor given the root item and left subtrees bt1 and right subtree bt2
     bool IsEmpty();                // return true iff the binary tree is empty
     ThreadsTree<T> LeftSubtree();  // return the left subtree
     ThreadsTree<T> RightSubtree(); // return the right subtree
-    T RootData();                  // return the data in the root node of *this
+    ThreadsTreeNode<T> *Root();
+    T RootData(); // return the data in the root node of *this
     void InsertRight(ThreadsTreeNode<T> *s, ThreadsTreeNode<T> *r);
+    void InsertLeft(ThreadsTreeNode<T> *s, ThreadsTreeNode<T> *r);
     void Inorder();
     void Preorder();
     void Postorder();
@@ -35,7 +55,7 @@ public:
     void NonrecInorder();
     void NoStackInorder();
     bool operator==(const ThreadsTree &t);
-    ThreadsTreeNode<T> *Copy(ThreadsTreeNode<T> *p); // Workhorse
+    ThreadsTreeNode<T> *InorderSucc(ThreadsTreeNode<T> *node);
     bool Equal(const ThreadsTree<T> &t);
     bool Equal(ThreadsTreeNode<T> *a, ThreadsTreeNode<T> *b);
     void setup1();
@@ -43,18 +63,17 @@ public:
     void output();
 
 private:
-    TreeNode<T> *root;
-    void Visit(ThreadsTreeNode<T> *p) { cout << p->data << "  "; }
+    ThreadsTreeNode<T> *root;
 };
 template <class T>
 class InorderIterator
 {
 public:
-    InorderIterator() { currentNode = root; } // Constructor
+    InorderIterator() { currentNode = t.root; } // Constructor
     InorderIterator(ThreadsTree<T> tree) : t(tree) { currentNode = t.root; }
     T *Next()
     {
-        ThreadedNode<T> *temp = currentNode->rightChild;
+        ThreadsTreeNode<T> *temp = currentNode->rightChild;
         if (currentNode->rightThread)
         {
             currentNode = temp;
@@ -65,28 +84,16 @@ public:
                 temp = temp->leftChild;
             currentNode = temp;
         }
-        if (currentNode == head)
+        if (currentNode == t.head)
             return 0;
         else
             return &currentNode->data;
     }
     T &operator*();
-    bool operator!=(const InorderIterator r) private : Tree<T> t;
-    Stack<TreeNode<T> *> s;
-    TreeNode<T> *currentNode;
+    bool operator!=(const InorderIterator r);
+
+private:
+    ThreadsTree<T> t;
+    Stack<ThreadsTreeNode<T> *> s;
+    ThreadsTreeNode<T> *currentNode;
 };
-template <class T>
-void ThreadsTree<T>::InsertRight(ThreadsTreeNode<T> *s, ThreadsTreeNode<T> *r)
-{ // insert r as the right child of s
-    r->rightChild = s->rightChild;
-    r->rightThread = s->rightThread;
-    r->leftChild = s;
-    r->leftThread = true; // leftChild is a thread
-    s->rightChild = r;
-    s->rightThread = false;
-    if (!r->rightThread)
-    {
-        ThreadedNode<T> *temp = InorderSucc(r);
-        temp->leftChild = r;
-    }
-}
