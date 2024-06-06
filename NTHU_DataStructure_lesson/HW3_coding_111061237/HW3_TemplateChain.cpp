@@ -29,31 +29,10 @@ inline bool Chain<T>::IsEmpty()
 template <class T>
 int Chain<T>::Size()
 {
-    ChainNode<T> *list = new ChainNode<T>;
-    list->data = 20;
-    ChainNode<T> *ptr = new ChainNode<T>;
-    ptr->data = 28;
-    ptr->link = NULL;
-    list->link = ptr;
-    ptr = new ChainNode<T>;
-    ptr->data = 30;
-    ptr->link = list;
-    list = ptr;
-    ptr = new ChainNode<T>;
-    ptr->data = 42;
-    ptr->link = list->link;
-    list->link = ptr;
-    ptr = list;
-    while (ptr != NULL)
-    {
-        cout << ptr->data << endl;
-        ptr = ptr->link;
-    }
-
     int size = 0;
     ChainNode<T> *pointer = first;
     while (pointer != NULL)
-    { // delete first
+    {
         size++;
         pointer = pointer->link;
     }
