@@ -8,8 +8,10 @@ class ChainNode
 {
     friend class Chain<T>;
 
-private:
+public:
     T data;
+
+private:
     ChainNode<T> *link;
 };
 
@@ -36,6 +38,8 @@ public:
     void Insert(int index, const T &e);
     void DivideMid(Chain<T> &b);
     void Concatenate(Chain<T> &b);
+    ChainNode<T> *Next();
+    void ResetPointer();
     class ChainIterator
     {
     public: // typedefs required by C++ for a forward iterator
@@ -74,9 +78,10 @@ public:
     };
     ChainIterator begin() { return ChainIterator(first); }
     ChainIterator end() { return ChainIterator(0); }
+    ChainNode<T> *pointer = first;
 
 private:
-    ChainNode<T> *first;
+    ChainNode<T> *first, *last;
 };
 template <class T>
 void ChangeSize1D(T *&a, const int oldSize, const int newSize)
@@ -100,6 +105,10 @@ public:
     {
         front = 0;
         rear = 0;
+        if (capacity < 1)
+            throw "Capacity must be > 0";
+        array = new T[capacity];
+        top = -1;
     }
     ~Queue() {}
     bool IsEmpty() const
@@ -131,6 +140,7 @@ public:
             ChangeSize1D(array, capacity, 2 * capacity);
             capacity *= 2;
         }
+
         array[++top] = item;
     }
 
@@ -145,6 +155,7 @@ public:
     LinkedGraph(const int inputVertices = 0) : vertices(inputVertices), edges(0)
     {
         adjLists = new Chain<int>[vertices];
+        fill(visited, visited + vertices, false);
     }
     void InitEdges(); // print out each vertice // input the vertices that it adjacents with
     void BFS(int v);

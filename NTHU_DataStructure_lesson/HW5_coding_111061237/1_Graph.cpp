@@ -1,7 +1,7 @@
 #include "1_Graph.h"
 
 template <class T>
-Chain<T>::Chain() { first = NULL; }
+Chain<T>::Chain() { first = last = pointer = NULL; }
 template <class T>
 Chain<T>::~Chain()
 {
@@ -32,7 +32,17 @@ int Chain<T>::Size()
     return size;
 }
 template <class T>
-void Chain<T>::InsertBack(const T &e) {}
+void Chain<T>::InsertBack(const T &e)
+{
+    ChainNode<T> *newNode = new ChainNode<T>;
+    newNode->data = e;
+    newNode->link = NULL;
+    if (first == NULL)
+        first = last = pointer = newNode;
+    else
+        last->link = newNode;
+    last = newNode;
+}
 template <class T>
 void Chain<T>::DeleteBack() {}
 template <class T>
@@ -43,20 +53,53 @@ template <class T>
 T &Chain<T>::Get(int index) {}
 template <class T>
 T &Chain<T>::Set(int index, const T &e) {}
-
+template <class T>
+ChainNode<T> *Chain<T>::Next()
+{
+    // pointer = pointer->link;
+    if (pointer->link != nullptr)
+        return pointer->link;
+    else
+        return NULL;
+}
+template <class T>
+void Chain<T>::ResetPointer()
+{
+    pointer = first;
+}
 void LinkedGraph::InitEdges()
 {
+    int ins;
     for (int i = 0; i < vertices; i++)
     {
         cout << "vertex " << i << endl;
+        std::string input;
+        int j = -1;
+        do
+        {
+            j++;
+            cin >> input[j];
+        } while (input[j] != '.');
+        for (int k = 0; k < j; k++)
+        {
+            if ((int)input[k] - 48 >= 0 && (int)input[k] - 48 < vertices)
+                adjLists[i].InsertBack((int)input[k] - 48);
+            cout << (int)input[k] - 48 << " ";
+        }
         // while ()
+        // {
+        //     cin >> ins;
+        //     adjLists[i].InsertBack(ins);
+        // }
     }
 
 } // print out each vertice // input the vertices that it adjacents with
 void LinkedGraph::BFS(int v)
 {
+    adjLists[v].ResetPointer();
     // visited = new bool[n];
     fill(visited, visited + vertices, false);
+    cout << v << ", ";
     visited[v] = true;
     Queue<int> q;
     q.Push(v);
@@ -64,43 +107,51 @@ void LinkedGraph::BFS(int v)
     {
         v = q.Front();
         q.Pop();
-        // ChainNode *temp = adjLists[v].first;
-        // while (temp != NULL)
-        // {
-        //     if (!visited[temp.data])
-        //     {
-        //         q.Push(temp.data);
-        //         visited[temp.data] = true;
-        //     }
-        //     temp = temp->link;
-        // }
-    } // end of while loop
-    // delete[] visited;
+        while (adjLists[v].pointer != NULL)
+        {
+            if (!visited[adjLists[v].pointer->data])
+            {
+                q.Push(adjLists[v].pointer->data);
+                cout << adjLists[v].pointer->data << ", ";
+                visited[adjLists[v].pointer->data] = true;
+            }
+            adjLists[v].pointer = adjLists[v].Next();
+        }
+    }
 }
 void LinkedGraph::DFS(int v)
 {
-
+    adjLists[v].ResetPointer();
     visited[v] = true;
     cout << v << ", ";
-    ChainIterator<int> li(adjLists[v]);
     if (adjLists[v].IsEmpty())
         return;
-    // int w = adjLists[v].first->data;
-    int w = *li.Begin();
-    // ChainNode<T> *temp = adjLists[v].first;
-    while (1)
+    int w = adjLists[v].pointer->data;
+    ChainNode<int> *temp = adjLists[v].pointer;
+    // while (1)
+    // {
+    //     if (!visited[w])
+    //         DFS(w);
+    //     if (adjLists[v].Next() != NULL)
+    //     {
+    //         adjLists[v].pointer = adjLists[v].Next();
+    //         w = adjLists[v].pointer->data;
+    //     }
+    //     else
+    //         return;
+    // }
+    for (int i = 0; i < vertices; i++)
     {
-        if (!visited[w])
-            DFS(w);
-        // if (temp->link != NULL)
-        // {
-        //     temp = temp->link;
-        //     w = temp->data;
-        // }
-        if (li->link != NULL)
-            w = *li++;
-        else
-            return;
+        while (visited[w] && adjLists[v].Next() != nullptr)
+        {
+            adjLists[v].pointer = adjLists[v].Next();
+            w = adjLists[v].pointer->data;
+        }
+        v = w;
+        if (!visited[v])
+            cout << v << ", ";
+        visited[v] = true;
+        w = adjLists[v].pointer->data;
     }
 }
 void LinkedGraph::Components()
