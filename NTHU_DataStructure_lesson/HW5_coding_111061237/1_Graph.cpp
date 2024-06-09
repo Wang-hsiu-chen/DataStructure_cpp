@@ -86,20 +86,15 @@ void LinkedGraph::InitEdges()
                 adjLists[i].InsertBack((int)input[k] - 48);
             cout << (int)input[k] - 48 << " ";
         }
-        // while ()
-        // {
-        //     cin >> ins;
-        //     adjLists[i].InsertBack(ins);
-        // }
     }
-
 } // print out each vertice // input the vertices that it adjacents with
 void LinkedGraph::BFS(int v)
 {
-    adjLists[v].ResetPointer();
+    for (int i = 0; i < vertices; i++)
+        adjLists[i].ResetPointer();
     // visited = new bool[n];
     fill(visited, visited + vertices, false);
-    cout << v << ", ";
+    cout << v;
     visited[v] = true;
     Queue<int> q;
     q.Push(v);
@@ -112,21 +107,23 @@ void LinkedGraph::BFS(int v)
             if (!visited[adjLists[v].pointer->data])
             {
                 q.Push(adjLists[v].pointer->data);
-                cout << adjLists[v].pointer->data << ", ";
+                cout << ", " << adjLists[v].pointer->data;
                 visited[adjLists[v].pointer->data] = true;
             }
             adjLists[v].pointer = adjLists[v].Next();
         }
     }
+    cout << endl;
 }
 void LinkedGraph::DFS(int v)
 {
     adjLists[v].ResetPointer();
+    fill(visited, visited + vertices, false);
     visited[v] = true;
-    cout << v << ", ";
+    cout << v;
     if (adjLists[v].IsEmpty())
         return;
-    int w = adjLists[v].pointer->data;
+    int w;
     ChainNode<int> *temp = adjLists[v].pointer;
     // while (1)
     // {
@@ -140,19 +137,21 @@ void LinkedGraph::DFS(int v)
     //     else
     //         return;
     // }
-    for (int i = 0; i < vertices; i++)
+    do
     {
+        w = adjLists[v].pointer->data;
         while (visited[w] && adjLists[v].Next() != nullptr)
         {
             adjLists[v].pointer = adjLists[v].Next();
             w = adjLists[v].pointer->data;
+            cout << "test: " << w;
         }
         v = w;
         if (!visited[v])
-            cout << v << ", ";
+            cout << ", " << v;
         visited[v] = true;
-        w = adjLists[v].pointer->data;
-    }
+    } while (!visited[w]);
+    cout << endl;
 }
 void LinkedGraph::Components()
 {
@@ -166,8 +165,34 @@ void LinkedGraph::Components()
             // OutputNewComponent(); // print current vertex
         }
     }
-    delete[] visited;
 }
-void LinkedGraph::DfnLow()
+void LinkedGraph::DfnLow(const int v) // 從頂點x開始執行DFS
 {
+    num = 1; // num 是Graph的一個int資料成員
+    fill(dfn, dfn + n, 0);
+    fill(low, low + n, 0);
+    DfnLow(v, -1); // 從頂點x開始
+    delete[] dfn;
+    delete[] low;
+}
+
+void LinkedGraph::DfnLow(const int u, const int v)
+{
+    // 由頂點u開始，一邊做深度優先搜尋一邊計算dfn及low。
+    // 在製造出的生成樹中v是u的父節點（如果v存在的話）
+    dfn[u] = low[u] = num++;
+    while (adjLists[u].pointer = != nullptr)
+    { // 實際的程式碼使用疊代器
+        int w = adjLists[u].pointer->data;
+        adjLists[u].pointer = adjLists[u].Next();
+        if (dfn[w] == 0)
+        { // w是未拜訪過的頂點
+            DfnLow(w, u);
+            low[u] = min(low[u], low[w]);
+        }
+        else if (w != v)
+            low[u] = min(low[u], dfn[w]); // back edge
+    }
+    for (int i = 0; i < vertices; i++)
+        cout << "i: " dfn[i] << " " << low[i] << endl;
 } // Display the computed dfn[i] and low[i] of the graph and the articulation points found
