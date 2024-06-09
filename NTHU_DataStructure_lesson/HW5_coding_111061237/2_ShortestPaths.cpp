@@ -1,5 +1,5 @@
 #include "2_ShortestPaths.h"
-
+#define MAX 100000
 template <class T>
 Chain<T>::Chain() { first = last = pointer = NULL; }
 template <class T>
@@ -179,6 +179,24 @@ void LinkedGraph::Dijkstra(int v)
             dijkstraTree[dijkstraTree[0]] = newPathPoint;
         }
     }
+    cout << "       path        length" << endl;
+    for (int i = 0; i < vertices; i++)
+    {
+        int node = i;
+        std::stack<int> mystack;
+        do
+        {
+            mystack.push(path[node].second);
+            node = path[node].second;
+        } while (node != -1);
+        cout << "path " << i;
+        while (!mystack.empty())
+        {
+            cout << mystack.top() << " ";
+            mystack.pop();
+        }
+        cout << path[i].first << endl;
+    }
 }
 void LinkedGraph::BellmanFord(int v)
 {
@@ -188,7 +206,7 @@ void LinkedGraph::BellmanFord(int v)
         matrix[i] = new int[vertices];
         for (int j = 0; j < vertices; j++)
         {
-            matrix[i][j] = 100000;
+            matrix[i][j] = MAX;
         }
     }
     for (int i = 0; i < vertices; i++)
@@ -207,15 +225,25 @@ void LinkedGraph::BellmanFord(int v)
     for (int i = 0; i < vertices; i++)
     {
         dist[i] = matrix[v][i];
+        if (abs(dist[i] - MAX) > 5)
+            cout << dist[i] << " ";
+        else
+            cout << "inf ";
     }
+    cout << endl;
     for (int k = 2; k <= vertices - 1; k++) // dist2 ~ dist(n-1)
+    {
         for (int u = 0; u < vertices; u++)
             if (u != v)
                 for (int i = 0; i < vertices; i++)
                     if (dist[u] > dist[i] + matrix[i][u])
                         dist[u] = dist[i] + matrix[i][u];
-    for (int i = 0; i < vertices; i++)
-        cout << dist[i] << " ";
+        if (abs(dist[k] - MAX) > 5)
+            cout << dist[k] << " ";
+        else
+            cout << "inf ";
+        cout << endl;
+    }
 }
 void LinkedGraph::Floyd()
 {
@@ -226,7 +254,7 @@ void LinkedGraph::Floyd()
         matrix[i] = new int[vertices];
         for (int j = 0; j < vertices; j++)
         {
-            matrix[i][j] = 100000;
+            matrix[i][j] = MAX;
         }
     }
     for (int i = 0; i < vertices; i++)
@@ -241,16 +269,34 @@ void LinkedGraph::Floyd()
     }
     for (int i = 0; i < vertices; i++)
         for (int j = 0; j < vertices; j++)
+        {
             dist[i * vertices + j] = matrix[i][j];
+            if (abs(dist[i * vertices + j] - MAX) > 5)
+                cout << dist[i * vertices + j] << " ";
+            else
+                cout << "inf ";
+        }
     for (int k = 0; k < vertices; k++)
+    {
+        cout << "A^" << k - 1 << ":\n";
         for (int i = 0; i < vertices; i++)
+        {
             for (int j = 0; j < vertices; j++)
+            {
                 if (dist[i * vertices + j] > (dist[i * vertices + k] + dist[k * vertices + j]))
                     dist[i * vertices + j] = dist[i * vertices + k] + dist[k * vertices + j];
-    for (int i = 0; i < vertices; i++)
-    {
-        for (int j = 0; j < vertices; j++)
-            cout << dist[i * vertices + j] << " ";
-        cout << endl;
+                if (abs(dist[i * vertices + j] - MAX) > 5)
+                    cout << dist[i * vertices + j] << " ";
+                else
+                    cout << "inf ";
+            }
+            cout << endl;
+        }
     }
+    // for (int i = 0; i < vertices; i++)
+    // {
+    //     for (int j = 0; j < vertices; j++)
+    //         cout << dist[i * vertices + j] << " ";
+    //     cout << endl;
+    // }
 }
