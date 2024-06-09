@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <stack>
 using namespace std;
 
 template <class T>
@@ -64,19 +65,35 @@ class LinkedGraph
 public:
     LinkedGraph(const int inputVertices = 0) : vertices(inputVertices), edges(0)
     {
-
         adjLists = new Chain<int>[vertices];
         fill(visited, visited + vertices, false);
+        earliestE = new int[vertices];
+        latestE = new int[vertices];
+        earliestA = new int[edges];
+        latestA = new int[edges];
+        topoSort = new int[vertices];
+        dist = new int[vertices];
     }
     void InitEdges(); // print out each vertice // input the vertices that it adjacents with
+    void ChangeToMetrix();
+    void LongestPath();
     void TopologicalOrder();
     void TimeOfEvents();
     void TimeOfActivies();
     void ActivityTimeMatrix();
     void CriticalNetwork();
+    void CountEdges();
+    void Setup1();
 
 private:
     Chain<int> *adjLists;
     bool *visited = new bool[vertices];
+    int **matrix = new int *[vertices];
+    int *topoSort;
+    int *dist;
     int vertices, edges;
+    int *earliestE;
+    int *latestE;
+    int *earliestA;
+    int *latestA;
 };
