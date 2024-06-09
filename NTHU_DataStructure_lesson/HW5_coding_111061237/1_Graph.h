@@ -40,44 +40,6 @@ public:
     void Concatenate(Chain<T> &b);
     ChainNode<T> *Next();
     void ResetPointer();
-    class ChainIterator
-    {
-    public: // typedefs required by C++ for a forward iterator
-        // Constructor
-        ChainIterator(ChainNode<T> *startNode = 0)
-        {
-            current = startNode;
-        }
-        // Dereferencing operators
-        T &operator*() const { return current->data; }
-        T *operator->() const { return &current->data; }
-        // Increment
-        ChainIterator &operator++() // preincrement
-        {
-            current = current->link;
-            return *this;
-        }
-        ChainIterator &operator++(int) // postincrement
-        {
-            ChainIterator old = *this;
-            current = current->link;
-            return old;
-        }
-        // Equality test
-        bool operator!=(const ChainIterator r)
-        {
-            return current != r.current;
-        }
-        bool operator==(const ChainIterator r)
-        {
-            return current == r.current;
-        }
-
-    private:
-        ChainNode<T> *current;
-    };
-    ChainIterator begin() { return ChainIterator(first); }
-    ChainIterator end() { return ChainIterator(0); }
     ChainNode<T> *pointer = first;
 
 private:
@@ -161,10 +123,14 @@ public:
     void BFS(int v);
     void DFS(int v);
     void Components();
-    void DfnLow(); // Display the computed dfn[i] and low[i] of the graph and the articulation points found
+    void DfnLow(const int v); // Display the computed dfn[i] and low[i] of the graph and the articulation points found
+    void DfnLow(const int u, const int v);
 
 private:
     Chain<int> *adjLists;
     bool *visited = new bool[vertices];
+    int *dfn = new int[vertices];
+    int *low = new int[vertices];
     int vertices, edges;
+    int num;
 };
