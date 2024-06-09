@@ -169,9 +169,9 @@ void LinkedGraph::Components()
 void LinkedGraph::DfnLow(const int v) // 從頂點x開始執行DFS
 {
     num = 1; // num 是Graph的一個int資料成員
-    fill(dfn, dfn + n, 0);
-    fill(low, low + n, 0);
-    DfnLow(v, -1); // 從頂點x開始
+    fill(dfn, dfn + vertices, 0);
+    fill(low, low + vertices, 0);
+    DfnLow(vertices, -1); // 從頂點x開始
     delete[] dfn;
     delete[] low;
 }
@@ -181,7 +181,7 @@ void LinkedGraph::DfnLow(const int u, const int v)
     // 由頂點u開始，一邊做深度優先搜尋一邊計算dfn及low。
     // 在製造出的生成樹中v是u的父節點（如果v存在的話）
     dfn[u] = low[u] = num++;
-    while (adjLists[u].pointer = != nullptr)
+    while (adjLists[u].pointer != nullptr)
     { // 實際的程式碼使用疊代器
         int w = adjLists[u].pointer->data;
         adjLists[u].pointer = adjLists[u].Next();
@@ -194,5 +194,45 @@ void LinkedGraph::DfnLow(const int u, const int v)
             low[u] = min(low[u], dfn[w]); // back edge
     }
     for (int i = 0; i < vertices; i++)
-        cout << "i: " dfn[i] << " " << low[i] << endl;
+        cout << "i: " << dfn[i] << " " << low[i] << endl;
 } // Display the computed dfn[i] and low[i] of the graph and the articulation points found
+void LinkedGraph::Setup1()
+{
+    adjLists[0].InsertBack(1);
+    adjLists[0].InsertBack(2);
+    adjLists[1].InsertBack(0);
+    adjLists[1].InsertBack(3);
+    adjLists[2].InsertBack(0);
+    adjLists[2].InsertBack(3);
+    adjLists[3].InsertBack(1);
+    adjLists[3].InsertBack(2);
+    adjLists[4].InsertBack(5);
+    adjLists[5].InsertBack(4);
+    adjLists[5].InsertBack(6);
+    adjLists[6].InsertBack(5);
+    adjLists[6].InsertBack(7);
+    adjLists[7].InsertBack(6);
+}
+void LinkedGraph::Setup2()
+{
+    adjLists[0].InsertBack(1);
+    adjLists[0].InsertBack(2);
+    adjLists[1].InsertBack(0);
+    adjLists[1].InsertBack(3);
+    adjLists[1].InsertBack(4);
+    adjLists[2].InsertBack(0);
+    adjLists[2].InsertBack(5);
+    adjLists[2].InsertBack(6);
+    adjLists[3].InsertBack(1);
+    adjLists[3].InsertBack(7);
+    adjLists[4].InsertBack(1);
+    adjLists[4].InsertBack(7);
+    adjLists[5].InsertBack(2);
+    adjLists[5].InsertBack(7);
+    adjLists[6].InsertBack(2);
+    adjLists[6].InsertBack(7);
+    adjLists[7].InsertBack(3);
+    adjLists[7].InsertBack(4);
+    adjLists[7].InsertBack(5);
+    adjLists[7].InsertBack(6);
+}

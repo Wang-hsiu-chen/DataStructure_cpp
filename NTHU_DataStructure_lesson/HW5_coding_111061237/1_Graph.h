@@ -125,6 +125,8 @@ public:
     void Components();
     void DfnLow(const int v); // Display the computed dfn[i] and low[i] of the graph and the articulation points found
     void DfnLow(const int u, const int v);
+    void Setup1();
+    void Setup2();
 
 private:
     Chain<int> *adjLists;
