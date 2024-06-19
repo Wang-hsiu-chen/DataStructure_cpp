@@ -139,8 +139,7 @@ void LinkedGraph::DFS(int v)
     // }
     do
     {
-        w = adjLists[v].pointer->data;
-        while (visited[w] && adjLists[v].Next() != nullptr)
+        while (visited[w] && adjLists[v].pointer != nullptr)
         {
             adjLists[v].pointer = adjLists[v].Next();
             w = adjLists[v].pointer->data;
@@ -150,6 +149,7 @@ void LinkedGraph::DFS(int v)
         if (!visited[v])
             cout << ", " << v;
         visited[v] = true;
+        w = adjLists[v].pointer->data;
     } while (!visited[w]);
     cout << endl;
 }

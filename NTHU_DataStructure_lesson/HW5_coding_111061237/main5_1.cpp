@@ -3,20 +3,20 @@
 int main()
 {
     LinkedGraph g1(11), g2(8), g3(8);
-    g1.InitEdges();
-    // g2.Setup1();
-    // g3.Setup2();
+    // g1.InitEdges();
+    g2.Setup1();
+    g3.Setup2();
     // BFS
-    g1.BFS(0);
-    g1.BFS(3);
-    g1.BFS(7);
+    // g2.BFS(0);
+    // g1.BFS(3);
+    // g1.BFS(7);
     // DFS
-    g1.DFS(0);
-    g1.DFS(3);
-    g1.DFS(7);
+    g2.DFS(0);
+    // g1.DFS(3);
+    // g1.DFS(7);
     // Components & DfnLow
-    g1.Components();
-    g1.DfnLow(3);
+    // g1.Components();
+    // g1.DfnLow(3);
 }
 // input sample for g1
 // 1 3.
