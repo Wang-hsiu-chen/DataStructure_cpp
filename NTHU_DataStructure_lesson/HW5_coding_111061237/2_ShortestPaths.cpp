@@ -142,8 +142,9 @@ void LinkedGraph::Dijkstra(int v)
     path[v].first = 0;
     path[v].second = -1;
 
-    while (dijkstraTree[0] < vertices)
+    for (int k = 0; k < vertices; k++)
     {
+        cout << endl;
         int newPathPoint = -1;
         for (int i = 0; i < vertices; i++)
         {
@@ -167,7 +168,7 @@ void LinkedGraph::Dijkstra(int v)
                     // if yes, compare edge(k,i)+path[k] with path[i].first
                     // if edge(k,i)+path[k] is shorter, update path[i].first with edge(k,i)+path[k] and path[i].second with k
                 }
-                if ((path[newPathPoint].first > path[i].first || path[newPathPoint].first == -1) && path[i].first != -1)
+                if ((path[newPathPoint].first > path[i].first || newPathPoint == -1) && path[i].first != -1)
                     newPathPoint = i;
             }
         }
@@ -189,13 +190,13 @@ void LinkedGraph::Dijkstra(int v)
             mystack.push(path[node].second);
             node = path[node].second;
         } while (node != -1);
-        cout << "path " << i;
+        cout << "path " << i << "| ";
         while (!mystack.empty())
         {
             cout << mystack.top() << " ";
             mystack.pop();
         }
-        cout << path[i].first << endl;
+        cout << "| " << path[i].first << endl;
     }
 }
 void LinkedGraph::BellmanFord(int v)
@@ -225,13 +226,13 @@ void LinkedGraph::BellmanFord(int v)
     for (int i = 0; i < vertices; i++)
     {
         dist[i] = matrix[v][i];
-        if (abs(dist[i] - MAX) > 5)
-            cout << dist[i] << " ";
-        else
-            cout << "inf ";
+        // if (abs(dist[i] - MAX) > 5)
+        //     cout << dist[i] << " ";
+        // else
+        //     cout << "inf ";
     }
-    cout << endl;
-    for (int k = 2; k <= vertices - 1; k++) // dist2 ~ dist(n-1)
+    // cout << endl;
+    for (int k = 0; k <= vertices - 1; k++) // dist2 ~ dist(n-1)
     {
         for (int u = 0; u < vertices; u++)
             if (u != v)
@@ -242,7 +243,6 @@ void LinkedGraph::BellmanFord(int v)
             cout << dist[k] << " ";
         else
             cout << "inf ";
-        cout << endl;
     }
 }
 void LinkedGraph::Floyd()
@@ -271,12 +271,13 @@ void LinkedGraph::Floyd()
         for (int j = 0; j < vertices; j++)
         {
             dist[i * vertices + j] = matrix[i][j];
-            if (abs(dist[i * vertices + j] - MAX) > 5)
-                cout << dist[i * vertices + j] << " ";
-            else
-                cout << "inf ";
+            // if (abs(dist[i * vertices + j] - MAX) > 5)
+            //     cout << dist[i * vertices + j] << " ";
+            // else
+            //     cout << "inf ";
         }
-    for (int k = 0; k < vertices; k++)
+    cout << endl;
+    for (int k = 0; k <= vertices; k++)
     {
         cout << "A^" << k - 1 << ":\n";
         for (int i = 0; i < vertices; i++)
@@ -293,10 +294,41 @@ void LinkedGraph::Floyd()
             cout << endl;
         }
     }
-    // for (int i = 0; i < vertices; i++)
-    // {
-    //     for (int j = 0; j < vertices; j++)
-    //         cout << dist[i * vertices + j] << " ";
-    //     cout << endl;
-    // }
+}
+
+void LinkedGraph::Setup1()
+{
+    // adjLists[0].InsertBack(0, 0);
+    adjLists[1].InsertBack(0, 30);
+    adjLists[2].InsertBack(0, 100);
+    adjLists[2].InsertBack(1, 80);
+    adjLists[3].InsertBack(2, 120);
+    adjLists[4].InsertBack(3, 150);
+    adjLists[4].InsertBack(5, 25);
+    adjLists[5].InsertBack(3, 100);
+    adjLists[5].InsertBack(6, 90);
+    adjLists[5].InsertBack(7, 140);
+    adjLists[6].InsertBack(7, 100);
+    adjLists[7].InsertBack(0, 170);
+}
+void LinkedGraph::Setup2()
+{
+    adjLists[0].InsertBack(1, 6);
+    adjLists[0].InsertBack(2, 5);
+    adjLists[0].InsertBack(3, 5);
+    adjLists[1].InsertBack(4, -1);
+    adjLists[2].InsertBack(1, -2);
+    adjLists[2].InsertBack(4, 1);
+    adjLists[3].InsertBack(2, -2);
+    adjLists[3].InsertBack(5, -1);
+    adjLists[4].InsertBack(6, 3);
+    adjLists[5].InsertBack(6, 3);
+}
+void LinkedGraph::Setup3()
+{
+    adjLists[0].InsertBack(1, 4);
+    adjLists[0].InsertBack(2, 11);
+    adjLists[1].InsertBack(0, 6);
+    adjLists[1].InsertBack(2, 2);
+    adjLists[2].InsertBack(0, 3);
 }

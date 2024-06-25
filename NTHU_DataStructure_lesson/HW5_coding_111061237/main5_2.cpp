@@ -2,12 +2,15 @@
 
 int main()
 {
-    LinkedGraph g1(7), g2(7);
-    g1.InitEdges();
+    LinkedGraph g1(8, 11), g2(7, 10), g3(3, 5);
+    // g1.InitEdges();
+    g1.Setup1();
     g1.Dijkstra(4);
-    g2.InitEdges();
+    // g2.InitEdges();
+    g2.Setup2();
     g2.BellmanFord(0);
-    g2.Floyd();
+    g3.Setup3();
+    g3.Floyd();
 }
 // test input for Dijkstra
 // 1 28, 5 10.

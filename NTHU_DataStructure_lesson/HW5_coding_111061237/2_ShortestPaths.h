@@ -63,19 +63,22 @@ void ChangeSize1D(T *&a, const int oldSize, const int newSize)
 class LinkedGraph
 {
 public:
-    LinkedGraph(const int inputVertices = 0) : vertices(inputVertices), edges(0)
+    LinkedGraph(const int inputVertices = 0, const int inputEdges = 0) : vertices(inputVertices), edges(inputEdges)
     {
-
         adjLists = new Chain<int>[vertices];
+        visited = new bool[vertices];
         fill(visited, visited + vertices, false);
     }
     void InitEdges(); // print out each vertice // input the vertices that it adjacents with
     void Dijkstra(int v);
     void BellmanFord(int v);
     void Floyd();
+    void Setup1();
+    void Setup2();
+    void Setup3();
 
 private:
     Chain<int> *adjLists;
-    bool *visited = new bool[vertices];
+    bool *visited;
     int vertices, edges;
 };
