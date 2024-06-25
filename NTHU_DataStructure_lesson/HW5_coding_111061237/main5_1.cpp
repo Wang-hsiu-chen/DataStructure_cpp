@@ -7,12 +7,12 @@ int main()
     g2.Setup1();
     g3.Setup2();
     // BFS
-    // g2.BFS(0);
-    // g1.BFS(3);
+    g2.BFS(0);
+    g3.BFS(3);
     // g1.BFS(7);
     // DFS
     g2.DFS(0);
-    // g1.DFS(3);
+    g3.DFS(3);
     // g1.DFS(7);
     // Components & DfnLow
     // g1.Components();

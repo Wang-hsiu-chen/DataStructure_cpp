@@ -117,40 +117,38 @@ void LinkedGraph::BFS(int v)
 }
 void LinkedGraph::DFS(int v)
 {
-    adjLists[v].ResetPointer();
+    std::stack<int> mystack;
+    for (int i = 0; i < vertices; i++)
+        adjLists[i].ResetPointer();
     fill(visited, visited + vertices, false);
     visited[v] = true;
     cout << v;
+    mystack.push(v);
     if (adjLists[v].IsEmpty())
         return;
-    int w;
-    ChainNode<int> *temp = adjLists[v].pointer;
-    // while (1)
-    // {
-    //     if (!visited[w])
-    //         DFS(w);
-    //     if (adjLists[v].Next() != NULL)
-    //     {
-    //         adjLists[v].pointer = adjLists[v].Next();
-    //         w = adjLists[v].pointer->data;
-    //     }
-    //     else
-    //         return;
-    // }
-    do
+    int nextV = adjLists[v].pointer->data;
+    for (int i = 0; i < vertices; i++)
     {
-        while (visited[w] && adjLists[v].pointer != nullptr)
+        while (visited[nextV] && adjLists[v].pointer != nullptr)
         {
+            nextV = adjLists[v].pointer->data;
             adjLists[v].pointer = adjLists[v].Next();
-            w = adjLists[v].pointer->data;
-            cout << "test: " << w;
         }
-        v = w;
+        v = nextV;
         if (!visited[v])
+        {
             cout << ", " << v;
-        visited[v] = true;
-        w = adjLists[v].pointer->data;
-    } while (!visited[w]);
+            visited[v] = true;
+            mystack.push(v);
+        }
+        else
+        {
+            mystack.pop();
+            if (mystack.top() == 0)
+                break;
+            v = mystack.top();
+        }
+    }
     cout << endl;
 }
 void LinkedGraph::Components()
